@@ -1,5 +1,5 @@
 -- Insertion de deux régions de Madagascar
-INSERT INTO region (nom) 
+INSERT INTO bgnrc_region (nom) 
 VALUES 
     ('Analamanga'),
     ('Diana');

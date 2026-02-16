@@ -1,8 +1,8 @@
 CREATE DATABASE IF NOT EXISTS bngrc;
-\connect bngrc;
+use bngrc;
 
 CREATE TABLE bgnrc_region (
-    id SERIAL PRIMARY KEY,
+    id INT PRIMARY KEY AUTO_INCREMENT,
     nom VARCHAR(50) NOT NULL
 );
 

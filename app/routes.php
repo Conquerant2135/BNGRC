@@ -20,7 +20,8 @@ require_once __DIR__ . '/controllers/BesoinController.php';
 Flight::route('GET /', [DashboardController::class, 'index']);
 
 // Saisie des besoins
-Flight::route('GET /besoins', ['besoinController' , 'index']);
+// Routes besoins (GET/POST)
+BesoinController::register();
 
 // Saisie des dons
 Flight::route('GET /dons', ['DonController', 'index']);
@@ -49,6 +50,3 @@ Flight::route('POST /articles/supprimer', [ArticleController::class, 'supprimer'
 // Flight::route('GET /' , function () {
 //     Flight::render('home');
 // });
-
-// Routes besoins (GET/POST)
-BesoinController::register();

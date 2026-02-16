@@ -1,14 +1,12 @@
 <?php
 
-namespace repositories;
-
 class TraboinaRepository
 {
     private $pdo;
 
     public function __construct()
     {
-        $this->pdo = \Flight::db();
+        $this->pdo = Flight::db();
     }
 
     public function insert(string $nom, string $adresse, string $numero): int

@@ -1,5 +1,6 @@
 <?php
 
+// repository 
 require_once __DIR__ . '/repositories/ArticleRepository.php';
 require_once __DIR__ . '/repositories/BesoinRepository.php';
 require_once __DIR__ . '/repositories/CategorieRepository.php';
@@ -19,8 +20,9 @@ require_once __DIR__ . '/controllers/BesoinController.php';
 // Tableau de bord (accueil)
 Flight::route('GET /', [DashboardController::class, 'index']);
 
-// Saisie des besoins
-Flight::route('GET /besoins', ['besoinController' , 'index']);
+// gestion des besoins
+Flight::route('GET /besoins', ['besoinController', 'index']);
+Flight::route('POST /besoins', ['besoinController', 'store']);
 
 // Saisie des dons
 Flight::route('GET /dons', ['DonController', 'index']);
@@ -46,9 +48,7 @@ Flight::route('POST /articles/ajouter', [ArticleController::class, 'ajouter']);
 Flight::route('POST /articles/modifier', [ArticleController::class, 'modifier']);
 Flight::route('POST /articles/supprimer', [ArticleController::class, 'supprimer']);
 
+
 // Flight::route('GET /' , function () {
 //     Flight::render('home');
 // });
-
-// Routes besoins (GET/POST)
-BesoinController::register();

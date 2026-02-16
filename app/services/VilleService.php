@@ -1,9 +1,14 @@
 <?php
-class VilleService {
+class VilleService
+{
   private $repo;
-  public function __construct(VilleRepository $repo) { $this->repo = $repo; }
+  public function __construct(VilleRepository $repo)
+  {
+    $this->repo = $repo;
+  }
 
-  public function validate(array $input) {
+  public function validate(array $input)
+  {
     $errors = [
       'nom_ville' => '',
       'id_region' => '',
@@ -31,7 +36,10 @@ class VilleService {
 
     $ok = true;
     foreach ($errors as $m) {
-      if ($m !== '') { $ok = false; break; }
+      if ($m !== '') {
+        $ok = false;
+        break;
+      }
     }
 
     return ['ok' => $ok, 'errors' => $errors, 'values' => $values];

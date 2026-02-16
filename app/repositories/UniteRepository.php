@@ -12,6 +12,6 @@ class UniteRepository
     public function all(): array
     {
         $stmt = $this->pdo->query("SELECT id, libelle FROM bngrc_unite ORDER BY libelle");
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

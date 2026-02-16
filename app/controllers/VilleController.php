@@ -2,7 +2,7 @@
 class VilleController {
   public static function index() {
     $pdo = Flight::db();
-    $repo = new VilleRepository($pdo);
+    $repo = new VilleRepository();
 
     $req = Flight::request();
     $editId = (string)($req->query->edit ?? '');
@@ -56,7 +56,7 @@ class VilleController {
 
   public static function store() {
     $pdo = Flight::db();
-    $repo = new VilleRepository($pdo);
+    $repo = new VilleRepository();
     $svc = new VilleService($repo);
 
     $req = Flight::request();

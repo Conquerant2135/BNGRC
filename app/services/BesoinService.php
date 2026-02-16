@@ -11,7 +11,7 @@ class BesoinService
         $this->articleRepo = new ArticleRepository();
     }
 
-    public function create(array $input): int
+    public function create(array $input)
     {
         $prixUnitaire = $this->articleRepo->prixUnitaire((int)$input['id_article']);
         if ($prixUnitaire === null) {

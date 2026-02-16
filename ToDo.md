@@ -37,64 +37,64 @@ region :
 		+ [ ] quantite
 
  -------------------
- 	region : 
- 		+ [ ] id_ region  
- 		+ [ ] plusieurs villes 
- 		
- 	ville :
- 		+ [ ] id_ville 
- 		+ [ ] nombres de sinistres  
- 		+ [ ] besoins    
- 		+ [ ] dons
++  [ ] Base de donnee:
+   +  [X] region 
+         +  [X] id_region
+         +  [X] nom_region
+   +  [X] ville 
+		 +  [X] id_ville
+		 +  [X] nom_ville
+		 +  [X] id_region
+		 +  [X] nb_sinistres
 
-<!-- c'est ici que les problemes commencent -->
 
-	unite :
-		+ [ ] id 
-		+ [ ] libelle
+	+ [X] unite :
+		+ [X] id 
+		+ [X] libelle
 
-	categorie :
-		+ [ ] id
-		+ [ ] nom
+	+ [X] categorie :
+		+ [X] id
+		+ [X] nom
 
-	article : 
-		+ [ ] id 
-		+ [ ] nom
-		+ [ ] id_unite
-		+ [ ] prix_unitaire
+	+ [X] article : 
+		+ [X] id 
+		+ [X] nom
+		+ [X] id_unite
+		+ [X] prix_unitaire
+		+ id_cat
 
-	traboina : 
-		+ [ ] id
-		+ [ ] nom 
-		+ [ ] adresse
-		+ [ ] numero
+	+ [X]traboina : 
+		+ [X] id
+		+ [X] nom 
+		+ [X] adresse
+		+ [X] numero
 
- 	besoin :
- 		+ [ ] id_besoin 
-		+ [ ] id_article 
-		+ [ ] id_ville
- 		+ [ ] quantite
- 		+ [ ] montant_totale 
-		+ [ ] id_traboina
-		+ [ ] date_demande 
+    + [X] besoin :
+ 		+ [X] id_besoin 
+		+ [X] id_article 
+		+ [X] id_ville
+ 		+ [X] quantite
+ 		+ [X] montant_totale 
+		+ [X] id_traboina
+		+ [X] date_demande 
 
- 	don :
-		+ [ ] id_don
-		+ [ ] donateur 
-		+ [ ] date_don
-		+ [ ] id_cat
-		+ [ ] id_article
-		+ [ ] quantite
+   	+ [X] don :
+		+ [X] id_don
+		+ [X] donateur 
+		+ [X] date_don
+		+ [X] id_cat
+		+ [X] id_article
+		+ [X] quantite
 
-	attribution_don :
-		+ [ ] id 
-		+ [ ] id_traboina
-		+ [ ] id_don
+	+ [X] attribution_don :
+		+ [X] id 
+		+ [X] id_traboina
+		+ [X] id_don
 
-	stock : 
-		+ [ ] id
-		+ [ ] quantite
-		+ [ ] 
+	+ [X] stock : 
+		+ [X] id
+		+ id_article
+		+ [X] quantite
 
   		  Le sujet dit :
 
@@ -125,7 +125,4 @@ region :
 
 			+ [ ] Total dons attribués
 
-+  [ ] Base de donnee:
-   +  [X] region 
-         +  [X] id_region
-         +  [X] nom_region
+

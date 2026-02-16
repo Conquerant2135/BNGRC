@@ -3,9 +3,7 @@
 // ========== Pages principales ==========
 
 // Tableau de bord (accueil)
-Flight::route('GET /', function () {
-    Flight::render('dashboard');
-});
+Flight::route('GET /', [DashboardController::class, 'index']);
 
 // Saisie des besoins
 Flight::route('GET /besoins', function () {
@@ -29,11 +27,11 @@ Flight::route('GET /villes', function () {
 });
 
 // Gestion des types d'articles
-Flight::route('GET /articles', function () {
-    Flight::render('articles');
-});
+Flight::route('GET /articles', [ArticleController::class, 'index']);
+Flight::route('POST /articles/ajouter', [ArticleController::class, 'ajouter']);
+Flight::route('POST /articles/modifier', [ArticleController::class, 'modifier']);
+Flight::route('POST /articles/supprimer', [ArticleController::class, 'supprimer']);
 
-Flight::route('GET /' , function () {
-    Flight::render('home');
-
-});
+// Flight::route('GET /' , function () {
+//     Flight::render('home');
+// });

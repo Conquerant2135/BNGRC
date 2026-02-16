@@ -1,7 +1,20 @@
 <?php
+if (!function_exists('e')) {
+    function e($v) { return htmlspecialchars($v ?? '', ENT_QUOTES, 'UTF-8'); }
+}
+
 $pageTitle = 'Tableau de bord';
 $breadcrumb = ['Tableau de bord' => null];
 $baseUrl = BASE_URL;
+
+// Variables passées par le contrôleur
+$nbVilles     = $nbVilles     ?? 0;
+$nbBesoins    = $nbBesoins    ?? 0;
+$nbDons       = $nbDons       ?? 0;
+$nbDispatch   = $nbDispatch   ?? 0;
+$villes       = $villes       ?? [];
+$derniersDons = $derniersDons ?? [];
+$categories   = $categories   ?? [];
 
 ob_start();
 ?>
@@ -16,7 +29,7 @@ ob_start();
         </div>
         <div>
           <h6 class="text-muted mb-1 small text-uppercase">Villes sinistrées</h6>
-          <h3 class="mb-0 fw-bold">12</h3>
+          <h3 class="mb-0 fw-bold"><?= number_format($nbVilles, 0, ',', ' ') ?></h3>
         </div>
       </div>
     </div>
@@ -29,7 +42,7 @@ ob_start();
         </div>
         <div>
           <h6 class="text-muted mb-1 small text-uppercase">Besoins enregistrés</h6>
-          <h3 class="mb-0 fw-bold">348</h3>
+          <h3 class="mb-0 fw-bold"><?= number_format($nbBesoins, 0, ',', ' ') ?></h3>
         </div>
       </div>
     </div>
@@ -42,7 +55,7 @@ ob_start();
         </div>
         <div>
           <h6 class="text-muted mb-1 small text-uppercase">Dons reçus</h6>
-          <h3 class="mb-0 fw-bold">187</h3>
+          <h3 class="mb-0 fw-bold"><?= number_format($nbDons, 0, ',', ' ') ?></h3>
         </div>
       </div>
     </div>
@@ -54,8 +67,8 @@ ob_start();
           <i class="bi bi-truck"></i>
         </div>
         <div>
-          <h6 class="text-muted mb-1 small text-uppercase">Dispatches effectués</h6>
-          <h3 class="mb-0 fw-bold">64</h3>
+          <h6 class="text-muted mb-1 small text-uppercase">Attributions effectuées</h6>
+          <h3 class="mb-0 fw-bold"><?= number_format($nbDispatch, 0, ',', ' ') ?></h3>
         </div>
       </div>
     </div>
@@ -68,9 +81,6 @@ ob_start();
     <h5 class="mb-0"><i class="bi bi-table me-2 text-primary"></i>Besoins par ville</h5>
     <div class="d-flex gap-2">
       <input type="text" class="form-control form-control-sm" placeholder="Rechercher une ville..." style="width: 220px;" id="searchVille">
-      <button class="btn btn-sm btn-outline-primary" title="Exporter">
-        <i class="bi bi-download"></i>
-      </button>
     </div>
   </div>
   <div class="card-body p-0">
@@ -81,109 +91,61 @@ ob_start();
             <th>Ville</th>
             <th>Région</th>
             <th class="text-center">Nb Sinistrés</th>
-            <th colspan="3" class="text-center bg-danger bg-opacity-75">Besoins</th>
-            <th colspan="3" class="text-center bg-success bg-opacity-75">Dons attribués</th>
+            <?php foreach ($categories as $cat): ?>
+              <th class="text-center bg-danger bg-opacity-75">Besoin <?= e($cat['nom']) ?></th>
+              <th class="text-center bg-success bg-opacity-75">Reçu <?= e($cat['nom']) ?></th>
+            <?php endforeach; ?>
             <th class="text-center">Couverture</th>
-          </tr>
-          <tr class="table-secondary small">
-            <th></th>
-            <th></th>
-            <th></th>
-            <th class="text-center">Nature</th>
-            <th class="text-center">Matériaux</th>
-            <th class="text-center">Argent (Ar)</th>
-            <th class="text-center">Nature</th>
-            <th class="text-center">Matériaux</th>
-            <th class="text-center">Argent (Ar)</th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
-          <!-- Ligne 1 -->
-          <tr>
-            <td class="fw-semibold">Antsirabe</td>
-            <td>Vakinankaratra</td>
-            <td class="text-center">1 250</td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">Riz: 500kg, Huile: 200L</span></td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">Tôle: 150, Clous: 50kg</span></td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">2 500 000</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">Riz: 300kg, Huile: 100L</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">Tôle: 80, Clous: 30kg</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">1 200 000</span></td>
-            <td class="text-center">
-              <div class="progress" style="height: 20px; min-width: 80px;">
-                <div class="progress-bar bg-warning" style="width: 52%;">52%</div>
-              </div>
-            </td>
-          </tr>
-          <!-- Ligne 2 -->
-          <tr>
-            <td class="fw-semibold">Mananjary</td>
-            <td>Vatovavy</td>
-            <td class="text-center">3 400</td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">Riz: 1200kg, Huile: 600L</span></td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">Tôle: 400, Clous: 120kg</span></td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">8 000 000</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">Riz: 1100kg, Huile: 550L</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">Tôle: 380, Clous: 110kg</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">7 500 000</span></td>
-            <td class="text-center">
-              <div class="progress" style="height: 20px; min-width: 80px;">
-                <div class="progress-bar bg-success" style="width: 91%;">91%</div>
-              </div>
-            </td>
-          </tr>
-          <!-- Ligne 3 -->
-          <tr>
-            <td class="fw-semibold">Toamasina</td>
-            <td>Atsinanana</td>
-            <td class="text-center">2 100</td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">Riz: 800kg, Huile: 350L</span></td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">Tôle: 250, Clous: 80kg</span></td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">5 000 000</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">Riz: 200kg, Huile: 50L</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">Tôle: 40, Clous: 10kg</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">800 000</span></td>
-            <td class="text-center">
-              <div class="progress" style="height: 20px; min-width: 80px;">
-                <div class="progress-bar bg-danger" style="width: 18%;">18%</div>
-              </div>
-            </td>
-          </tr>
-          <!-- Ligne 4 -->
-          <tr>
-            <td class="fw-semibold">Morondava</td>
-            <td>Menabe</td>
-            <td class="text-center">890</td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">Riz: 350kg, Huile: 150L</span></td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">Tôle: 100, Clous: 40kg</span></td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">1 800 000</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">Riz: 350kg, Huile: 150L</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">Tôle: 100, Clous: 40kg</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">1 800 000</span></td>
-            <td class="text-center">
-              <div class="progress" style="height: 20px; min-width: 80px;">
-                <div class="progress-bar bg-success" style="width: 100%;">100%</div>
-              </div>
-            </td>
-          </tr>
-          <!-- Ligne 5 -->
-          <tr>
-            <td class="fw-semibold">Farafangana</td>
-            <td>Atsimo-Atsinanana</td>
-            <td class="text-center">1 750</td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">Riz: 650kg, Huile: 280L</span></td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">Tôle: 200, Clous: 60kg</span></td>
-            <td class="text-center"><span class="badge bg-danger-soft text-danger">4 200 000</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">Riz: 450kg, Huile: 200L</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">Tôle: 130, Clous: 40kg</span></td>
-            <td class="text-center"><span class="badge bg-success-soft text-success">2 800 000</span></td>
-            <td class="text-center">
-              <div class="progress" style="height: 20px; min-width: 80px;">
-                <div class="progress-bar bg-warning" style="width: 65%;">65%</div>
-              </div>
-            </td>
-          </tr>
+          <?php if (empty($villes)): ?>
+            <tr>
+              <td colspan="<?= 3 + count($categories) * 2 + 1 ?>" class="text-center py-4 text-muted">
+                <i class="bi bi-inbox fs-3 d-block mb-2"></i>Aucune donnée disponible
+              </td>
+            </tr>
+          <?php else: ?>
+            <?php foreach ($villes as $v): ?>
+              <tr>
+                <td class="fw-semibold"><?= e($v['nom_ville']) ?></td>
+                <td><?= e($v['region']) ?></td>
+                <td class="text-center"><?= number_format($v['nb_sinistres'], 0, ',', ' ') ?></td>
+                <?php foreach ($categories as $cat): ?>
+                  <?php
+                    $catNom = $cat['nom'];
+                    $besoin = $v['categories'][$catNom]['besoin'] ?? 0;
+                    $recu   = $v['categories'][$catNom]['recu'] ?? 0;
+                    $fmtB   = number_format($besoin, ($besoin == intval($besoin)) ? 0 : 2, ',', ' ');
+                    $fmtR   = number_format($recu, ($recu == intval($recu)) ? 0 : 2, ',', ' ');
+                  ?>
+                  <td class="text-center">
+                    <?php if ($besoin > 0): ?>
+                      <span class="badge bg-danger-soft text-danger"><?= $fmtB ?></span>
+                    <?php else: ?>
+                      <span class="text-muted">—</span>
+                    <?php endif; ?>
+                  </td>
+                  <td class="text-center">
+                    <?php if ($recu > 0): ?>
+                      <span class="badge bg-success-soft text-success"><?= $fmtR ?></span>
+                    <?php else: ?>
+                      <span class="text-muted">—</span>
+                    <?php endif; ?>
+                  </td>
+                <?php endforeach; ?>
+                <td class="text-center">
+                  <?php
+                    $taux    = $v['taux'];
+                    $bgClass = $taux >= 90 ? 'bg-success' : ($taux >= 50 ? 'bg-warning' : 'bg-danger');
+                  ?>
+                  <div class="progress" style="height: 20px; min-width: 80px;">
+                    <div class="progress-bar <?= $bgClass ?>" style="width: <?= min($taux, 100) ?>%;"><?= $taux ?>%</div>
+                  </div>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          <?php endif; ?>
         </tbody>
       </table>
     </div>
@@ -205,47 +167,42 @@ ob_start();
               <tr>
                 <th>Date</th>
                 <th>Donateur</th>
-                <th>Type</th>
+                <th>Catégorie</th>
                 <th>Détails</th>
                 <th class="text-center">Statut</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="text-muted small">15/02/2026</td>
-                <td>Croix-Rouge Madagascar</td>
-                <td><span class="badge bg-info">Nature</span></td>
-                <td>Riz: 500kg, Huile: 200L</td>
-                <td class="text-center"><span class="badge bg-success">Distribué</span></td>
-              </tr>
-              <tr>
-                <td class="text-muted small">14/02/2026</td>
-                <td>Association Entraide</td>
-                <td><span class="badge bg-secondary">Matériaux</span></td>
-                <td>Tôle: 100 pièces, Clous: 30kg</td>
-                <td class="text-center"><span class="badge bg-warning text-dark">En attente</span></td>
-              </tr>
-              <tr>
-                <td class="text-muted small">13/02/2026</td>
-                <td>Banque BOA</td>
-                <td><span class="badge bg-primary">Argent</span></td>
-                <td>5 000 000 Ar</td>
-                <td class="text-center"><span class="badge bg-success">Distribué</span></td>
-              </tr>
-              <tr>
-                <td class="text-muted small">12/02/2026</td>
-                <td>ONG Care International</td>
-                <td><span class="badge bg-info">Nature</span></td>
-                <td>Riz: 1000kg, Eau: 500L</td>
-                <td class="text-center"><span class="badge bg-warning text-dark">En attente</span></td>
-              </tr>
-              <tr>
-                <td class="text-muted small">11/02/2026</td>
-                <td>Particulier anonyme</td>
-                <td><span class="badge bg-primary">Argent</span></td>
-                <td>2 000 000 Ar</td>
-                <td class="text-center"><span class="badge bg-success">Distribué</span></td>
-              </tr>
+              <?php if (empty($derniersDons)): ?>
+                <tr>
+                  <td colspan="5" class="text-center py-4 text-muted">
+                    <i class="bi bi-inbox fs-3 d-block mb-2"></i>Aucun don enregistré
+                  </td>
+                </tr>
+              <?php else: ?>
+                <?php foreach ($derniersDons as $don): ?>
+                  <?php
+                    $catNom = $don['categorie'] ?? 'Autre';
+                    $catBadge = 'bg-info';
+                    if (stripos($catNom, 'Matéri') !== false) $catBadge = 'bg-secondary';
+                    elseif (stripos($catNom, 'Argent') !== false) $catBadge = 'bg-primary';
+
+                    $etat = $don['etat'] ?? 'En attente';
+                    $etatBadge = 'bg-warning text-dark';
+                    if (stripos($etat, 'Distribu') !== false) $etatBadge = 'bg-success';
+                    elseif (stripos($etat, 'Partiel') !== false) $etatBadge = 'bg-info';
+
+                    $qte = number_format($don['quantite'], ($don['quantite'] == intval($don['quantite'])) ? 0 : 2, ',', ' ');
+                  ?>
+                  <tr>
+                    <td class="text-muted small"><?= date('d/m/Y', strtotime($don['date_don'])) ?></td>
+                    <td><?= e($don['donateur']) ?></td>
+                    <td><span class="badge <?= $catBadge ?>"><?= e($catNom) ?></span></td>
+                    <td><?= e($don['article_nom']) ?>: <?= $qte ?> <?= e($don['unite'] ?? '') ?></td>
+                    <td class="text-center"><span class="badge <?= $etatBadge ?>"><?= e($etat) ?></span></td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
             </tbody>
           </table>
         </div>

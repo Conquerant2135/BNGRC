@@ -2,6 +2,12 @@
 
 class DispatchController
 {
+    private static function redir(string $path): void
+    {
+        header('Location: ' . BASE_URL . $path);
+        exit;
+    }
+
     /**
      * GET /dispatch — Affiche la page de simulation
      */
@@ -50,8 +56,7 @@ class DispatchController
         $resultats = self::simulerDispatch($db, $dateDebut, $dateFin, $mode);
 
         if (empty($resultats)) {
-            Flight::redirect(BASE_URL . '/dispatch?error=' . urlencode('Aucune attribution à valider.'));
-            return;
+            self::redir('/dispatch?error=' . urlencode('Aucune attribution à valider.'));
         }
 
         try {
@@ -97,10 +102,10 @@ class DispatchController
 
             $db->commit();
 
-            Flight::redirect(BASE_URL . '/dispatch?success=1');
+            self::redir('/dispatch?success=1');
         } catch (Exception $e) {
             $db->rollBack();
-            Flight::redirect(BASE_URL . '/dispatch?error=' . urlencode($e->getMessage()));
+            self::redir('/dispatch?error=' . urlencode($e->getMessage()));
         }
     }
 

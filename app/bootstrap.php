@@ -15,6 +15,8 @@ Flight::register('db', 'PDO', [
 Flight::set('flight.views.path', __DIR__ . '/views');
 
 // Controllers
+require_once __DIR__ . '/controllers/ArticleController.php';
+require_once __DIR__ . '/controllers/DashboardController.php';
 require_once __DIR__ . '/controllers/DispatchController.php';
 
 require_once __DIR__ . '/routes.php';

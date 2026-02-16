@@ -37,25 +37,24 @@ region :
 		+ [ ] quantite
 
  -------------------
- 	region : 
- 		+ [ ] id_ region  
- 		+ [ ] plusieurs villes 
- 		
- 	ville :
- 		+ [ ] id_ville 
- 		+ [ ] nombres de sinistres  
- 		+ [ ] besoins    
- 		+ [ ] dons
++  [ ] Base de donnee:
+   +  [X] region 
+         +  [X] id_region
+         +  [X] nom_region
+   +  [X] ville 
+		 +  [X] id_ville
+		 +  [X] nom_ville
+		 +  [X] id_region
+		 +  [X] nb_sinistres
 
-<!-- c'est ici que les problemes commencent -->
 
-	unite :
-		+ [ ] id 
-		+ [ ] libelle
+	+ [X] unite :
+		+ [X] id 
+		+ [X] libelle
 
-	categorie :
-		+ [ ] id
-		+ [ ] nom
+	+ [X] categorie :
+		+ [X] id
+		+ [X] nom
 
 	article : 
 		+ [ ] id 
@@ -130,7 +129,4 @@ region :
 
 			+ [ ] Total dons attribués
 
-+  [ ] Base de donnee:
-   +  [X] region 
-         +  [X] id_region
-         +  [X] nom_region
+

@@ -82,6 +82,12 @@ function isActive($path) {
             <span>Simulation dispatch</span>
           </a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link sidebar-link <?= isActive('/achats') ?>" href="<?= $baseUrl ?>/achats">
+            <i class="bi bi-cart-check"></i>
+            <span>Achat de produits</span>
+          </a>
+        </li>
       </ul>
 
       <hr class="mx-3 border-secondary">

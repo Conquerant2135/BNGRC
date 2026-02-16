@@ -42,8 +42,12 @@ INSERT INTO bngrc_article (id, nom, id_unite, prix_unitaire, id_cat) VALUES
   (4, 'Tôle',   3, 25.000, 2),
   (5, 'Clous',  1, 5.000, 2),
   (6, 'Ciment', 4, 30.000, 2),
-  (7, 'Bois',   3, 15.000, 2)
+  (7, 'Bois',   3, 15.000, 2),
+  (8, 'Argent', 5, 15.000, 3)
 ON DUPLICATE KEY UPDATE nom = VALUES(nom);
+INSERT INTO bngrc_article (id, nom, id_unite, prix_unitaire, id_cat) VALUES
+
+(8, 'Argent', 5, 15.000, 3);
 
 -- États de don
 INSERT INTO bngrc_etat_don (id, nom) VALUES
@@ -98,5 +102,5 @@ VALUES
     (1, 120.000),
     (2, 30.000);
 
-
+INSERT INTO bngrc_montant_taxe (valeur) VALUES ( 10 );`
 

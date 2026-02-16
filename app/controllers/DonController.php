@@ -154,4 +154,87 @@ class DonController {
     $repo->delete((int)$id);
     Flight::redirect('/dons?success=3');
   }
+
+  public static function achatProduit(){
+    $pdo = Flight::db();
+    $repo = new DonRepository($pdo);
+
+    $req = Flight::request();
+
+    $values = [
+      'id_article' => '',
+      'quantite' => '',
+      'date_achat' => date('Y-m-d')
+    ];
+
+    $errors = [
+      'id_article' => '',
+      'quantite' => '',
+      'date_achat' => '',
+      'montant' => ''
+    ];
+
+    $flashSuccess = '';
+    $flashError = '';
+    $success = (string)($req->query->success ?? '');
+    $error = (string)($req->query->error ?? '');
+    if ($success === '1') $flashSuccess = 'Achat enregistré.';
+    if ($error === '1') $flashError = 'Veuillez corriger le formulaire.';
+    if ($error === '2') $flashError = "Montant insuffisant en dons d'argent (TTC).";
+
+    Flight::render('achat_produit', [
+      'articles' => $repo->listArticles(),
+      'achats' => $repo->listAchats(),
+      'besoinsRestants' => $repo->listBesoinsRestants(),
+      'taxe' => $repo->getTaxeValeur(),
+      'argentDisponible' => $repo->getArgentDisponible(),
+      'values' => $values,
+      'errors' => $errors,
+      'flashSuccess' => $flashSuccess,
+      'flashError' => $flashError
+    ]);
+  }
+
+  public static function validationAchat(){
+    $pdo = Flight::db();
+    $repo = new DonRepository($pdo);
+    $svc = new DonService($repo);
+
+    $req = Flight::request();
+    $input = [
+      'id_article' => $req->data->id_article,
+      'quantite' => $req->data->quantite,
+      'date_achat' => $req->data->date_achat
+    ];
+
+    $res = $svc->achatProduit($input);
+    if ($res['ok']) {
+      try {
+        $repo->achatProduit($res['values']);
+        Flight::redirect('/achats?success=1');
+        return;
+      } catch (Exception $e) {
+        Flight::redirect('/achats?error=1');
+        return;
+      }
+    }
+
+    $errCode = $res['errors']['montant'] !== '' ? '2' : '1';
+
+    Flight::render('achat_produit', [
+      'articles' => $repo->listArticles(),
+      'achats' => $repo->listAchats(),
+      'besoinsRestants' => $repo->listBesoinsRestants(),
+      'taxe' => $repo->getTaxeValeur(),
+      'argentDisponible' => $repo->getArgentDisponible(),
+      'values' => [
+        'id_article' => (string)($input['id_article'] ?? ''),
+        'quantite' => (string)($input['quantite'] ?? ''),
+        'date_achat' => (string)($input['date_achat'] ?? '')
+      ],
+      'errors' => $res['errors'],
+      'flashSuccess' => '',
+      'flashError' => ($errCode === '2') ? "Montant insuffisant en dons d'argent (TTC)." : 'Veuillez corriger le formulaire.'
+    ]);
+  }
 }

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/config.php';
 
 Flight::register('db', 'PDO', array(
-    "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET,
+    "psql:host=" . DB_HOST . ";dbname=" . DB_NAME . 
     DB_USER,
     DB_PASS,
     array(

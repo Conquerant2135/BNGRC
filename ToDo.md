@@ -135,7 +135,24 @@ region :
 			+ [ ] Total dons attribués
 
 
-design css <!-- Sarobidy -->
+
+ + [X] Don CRUD 
+     + [X] DonRepostitory.php
+       + [X] listAll()
+       + [X] findById($id)
+       + [X] create($data)
+	   + [X] update($id, $data)
+  	   + [X] delete($id)
+  	   + [X] lisCategories()
+  	   + [X] listArticles()
+  	   + [x] listEtats()
+     + [X] DonService.php
+       + [X] validate($data)
+     + [X] DonController.php
+       + [X] index() // Affiche la liste des dons
+       + [X] update($id) // Met à jour un don existant
+	   + [X] delete($id) // Supprime un don
++ [X]ajout data design css <!-- Sarobidy -->
 	+ [x] recupérationn des images utiles
 	+ [x] utilisation de bootstrap
 	+ [x] mise en page des view

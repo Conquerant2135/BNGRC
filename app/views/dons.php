@@ -3,6 +3,33 @@ $pageTitle = 'Saisie des dons';
 $breadcrumb = ['Saisie des dons' => null];
 $baseUrl = BASE_URL;
 
+$values = $values ?? [
+  'id_don' => '',
+  'donateur' => '',
+  'date_don' => date('Y-m-d'),
+  'id_cat' => '',
+  'id_article' => '',
+  'quantite' => '',
+  'id_etat' => ''
+];
+
+$errors = $errors ?? [
+  'donateur' => '',
+  'date_don' => '',
+  'id_cat' => '',
+  'id_article' => '',
+  'quantite' => '',
+  'id_etat' => ''
+];
+
+$isEdit = $isEdit ?? false;
+$esc = function($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); };
+$fmtQty = function($v) {
+  $n = number_format((float)$v, 3, '.', ' ');
+  $n = rtrim(rtrim($n, '0'), '.');
+  return $n === '' ? '0' : $n;
+};
+
 ob_start();
 ?>
 
@@ -13,95 +40,87 @@ ob_start();
 <!-- ===== FORMULAIRE ===== -->
 <div class="card border-0 shadow-sm mb-4">
   <div class="card-header bg-white py-3">
-    <h6 class="mb-0"><i class="bi bi-plus-circle me-2 text-success"></i>Enregistrer un nouveau don</h6>
+    <h6 class="mb-0">
+      <i class="bi bi-plus-circle me-2 text-success"></i>
+      <?= $isEdit ? 'Modifier le don' : 'Enregistrer un nouveau don' ?>
+    </h6>
   </div>
   <div class="card-body">
-    <form id="formDon" method="post" novalidate>
+    <form id="formDon" method="post" action="<?= $isEdit ? $baseUrl . '/dons/' . $esc($values['id_don']) . '/update' : $baseUrl . '/dons' ?>" novalidate>
       <div class="row g-3">
-        <!-- Donateur -->
         <div class="col-md-4">
           <label for="donateur" class="form-label fw-semibold">Donateur <span class="text-danger">*</span></label>
-          <input type="text" class="form-control" id="donateur" name="donateur" placeholder="Nom du donateur ou organisme" required>
-          <div class="invalid-feedback">Nom du donateur requis.</div>
+          <input type="text" class="form-control <?= $errors['donateur'] ? 'is-invalid' : '' ?>" id="donateur" name="donateur" value="<?= $esc($values['donateur']) ?>" placeholder="Nom du donateur ou organisme" required>
+          <?php if ($errors['donateur']): ?><div class="invalid-feedback"><?= $esc($errors['donateur']) ?></div><?php endif; ?>
         </div>
 
-        <!-- Type de don -->
         <div class="col-md-4">
-          <label for="typeDon" class="form-label fw-semibold">Type de don <span class="text-danger">*</span></label>
-          <select class="form-select" id="typeDon" name="type_don" required>
+          <label for="categorie" class="form-label fw-semibold">Catégorie <span class="text-danger">*</span></label>
+          <select class="form-select <?= $errors['id_cat'] ? 'is-invalid' : '' ?>" id="categorie" name="id_cat" required>
             <option value="">— Sélectionner —</option>
-            <option value="nature">🍚 En nature (riz, huile, ...)</option>
-            <option value="materiaux">🔧 En matériaux (tôle, clous, ...)</option>
-            <option value="argent">💰 En argent</option>
+            <?php foreach (($categories ?? []) as $cat): ?>
+              <option value="<?= $esc($cat['id']) ?>" <?= ((string)$cat['id'] === (string)$values['id_cat']) ? 'selected' : '' ?>>
+                <?= $esc($cat['nom']) ?>
+              </option>
+            <?php endforeach; ?>
           </select>
-          <div class="invalid-feedback">Veuillez choisir un type.</div>
+          <?php if ($errors['id_cat']): ?><div class="invalid-feedback"><?= $esc($errors['id_cat']) ?></div><?php endif; ?>
         </div>
 
-        <!-- Date -->
         <div class="col-md-4">
           <label for="dateDon" class="form-label fw-semibold">Date du don <span class="text-danger">*</span></label>
-          <input type="date" class="form-control" id="dateDon" name="date_don" value="<?= date('Y-m-d') ?>" required>
-          <div class="invalid-feedback">Date requise.</div>
+          <input type="date" class="form-control <?= $errors['date_don'] ? 'is-invalid' : '' ?>" id="dateDon" name="date_don" value="<?= $esc($values['date_don']) ?>" required>
+          <?php if ($errors['date_don']): ?><div class="invalid-feedback"><?= $esc($errors['date_don']) ?></div><?php endif; ?>
         </div>
       </div>
 
-      <!-- Dynamic article lines -->
-      <div class="mt-4">
-        <label class="form-label fw-semibold">Détails du don</label>
-        <div id="lignesDons">
-          <div class="row g-2 mb-2 ligne-don align-items-end">
-            <div class="col-md-5">
-              <label class="form-label small text-muted">Article</label>
-              <select class="form-select form-select-sm" name="article[]">
-                <option value="">— Article —</option>
-                <option value="riz">Riz</option>
-                <option value="huile">Huile</option>
-                <option value="eau">Eau</option>
-                <option value="tole">Tôle</option>
-                <option value="clous">Clous</option>
-                <option value="ciment">Ciment</option>
-                <option value="bois">Bois</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Quantité</label>
-              <input type="number" class="form-control form-control-sm" name="quantite[]" min="1" placeholder="0">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Unité</label>
-              <select class="form-select form-select-sm" name="unite[]">
-                <option value="kg">kg</option>
-                <option value="L">Litres</option>
-                <option value="pièces">Pièces</option>
-                <option value="sacs">Sacs</option>
-                <option value="Ar">Ariary</option>
-              </select>
-            </div>
-            <div class="col-md-1">
-              <button type="button" class="btn btn-sm btn-outline-danger w-100 btn-remove-line" title="Supprimer">
-                <i class="bi bi-trash"></i>
-              </button>
-            </div>
-          </div>
+      <div class="row g-3 mt-1">
+        <div class="col-md-6">
+          <label for="article" class="form-label fw-semibold">Article</label>
+          <select class="form-select <?= $errors['id_article'] ? 'is-invalid' : '' ?>" id="article" name="id_article">
+            <option value="">— Aucun (ex: don en argent) —</option>
+            <?php foreach (($articles ?? []) as $art): ?>
+              <option value="<?= $esc($art['id']) ?>" <?= ((string)$art['id'] === (string)$values['id_article']) ? 'selected' : '' ?>>
+                <?= $esc($art['nom']) ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+          <?php if ($errors['id_article']): ?><div class="invalid-feedback"><?= $esc($errors['id_article']) ?></div><?php endif; ?>
         </div>
-        <button type="button" class="btn btn-sm btn-outline-success mt-2" id="btnAddLineDon">
-          <i class="bi bi-plus-lg"></i> Ajouter une ligne
-        </button>
-      </div>
 
-      <!-- Observations -->
-      <div class="mt-3">
-        <label for="observationDon" class="form-label fw-semibold">Observations</label>
-        <textarea class="form-control" id="observationDon" name="observation" rows="2" placeholder="Remarques éventuelles..."></textarea>
+        <div class="col-md-3">
+          <label for="quantite" class="form-label fw-semibold">Quantité <span class="text-danger">*</span></label>
+          <input type="number" class="form-control <?= $errors['quantite'] ? 'is-invalid' : '' ?>" id="quantite" name="quantite" step="0.001" min="0" value="<?= $esc($values['quantite']) ?>" placeholder="0" required>
+          <?php if ($errors['quantite']): ?><div class="invalid-feedback"><?= $esc($errors['quantite']) ?></div><?php endif; ?>
+        </div>
+
+        <div class="col-md-3">
+          <label for="etat" class="form-label fw-semibold">État <span class="text-danger">*</span></label>
+          <select class="form-select <?= $errors['id_etat'] ? 'is-invalid' : '' ?>" id="etat" name="id_etat" required>
+            <option value="">— Sélectionner —</option>
+            <?php foreach (($etats ?? []) as $etat): ?>
+              <option value="<?= $esc($etat['id']) ?>" <?= ((string)$etat['id'] === (string)$values['id_etat']) ? 'selected' : '' ?>>
+                <?= $esc($etat['nom']) ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+          <?php if ($errors['id_etat']): ?><div class="invalid-feedback"><?= $esc($errors['id_etat']) ?></div><?php endif; ?>
+        </div>
       </div>
 
       <div class="mt-4 d-flex gap-2">
         <button type="submit" class="btn btn-success">
-          <i class="bi bi-check-lg"></i> Enregistrer le don
+          <i class="bi bi-check-lg"></i> <?= $isEdit ? 'Mettre à jour' : 'Enregistrer le don' ?>
         </button>
-        <button type="reset" class="btn btn-outline-secondary">
-          <i class="bi bi-arrow-counterclockwise"></i> Réinitialiser
-        </button>
+        <?php if ($isEdit): ?>
+          <a class="btn btn-outline-secondary" href="<?= $baseUrl ?>/dons">
+            <i class="bi bi-x-circle"></i> Annuler
+          </a>
+        <?php else: ?>
+          <button type="reset" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-counterclockwise"></i> Réinitialiser
+          </button>
+        <?php endif; ?>
       </div>
     </form>
   </div>
@@ -111,15 +130,6 @@ ob_start();
 <div class="card border-0 shadow-sm">
   <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
     <h6 class="mb-0"><i class="bi bi-list-ul me-2 text-success"></i>Liste des dons enregistrés</h6>
-    <div class="d-flex gap-2">
-      <input type="text" class="form-control form-control-sm" placeholder="Rechercher un donateur..." style="width:200px;">
-      <select class="form-select form-select-sm" style="width:150px;">
-        <option value="">Tous les types</option>
-        <option value="nature">En nature</option>
-        <option value="materiaux">En matériaux</option>
-        <option value="argent">En argent</option>
-      </select>
-    </div>
   </div>
   <div class="card-body p-0">
     <div class="table-responsive">
@@ -132,95 +142,51 @@ ob_start();
             <th>Type</th>
             <th>Article</th>
             <th class="text-end">Quantité</th>
-            <th>Unité</th>
-            <th class="text-center">Statut</th>
+            <th class="text-center">État</th>
             <th class="text-center">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td class="text-muted">1</td>
-            <td>15/02/2026</td>
-            <td class="fw-semibold">Croix-Rouge Madagascar</td>
-            <td><span class="badge bg-info">Nature</span></td>
-            <td>Riz</td>
-            <td class="text-end">500</td>
-            <td>kg</td>
-            <td class="text-center"><span class="badge bg-success">Distribué</span></td>
-            <td class="text-center">
-              <button class="btn btn-sm btn-outline-warning" title="Modifier"><i class="bi bi-pencil"></i></button>
-              <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
-            </td>
-          </tr>
-          <tr>
-            <td class="text-muted">2</td>
-            <td>15/02/2026</td>
-            <td class="fw-semibold">Croix-Rouge Madagascar</td>
-            <td><span class="badge bg-info">Nature</span></td>
-            <td>Huile</td>
-            <td class="text-end">200</td>
-            <td>L</td>
-            <td class="text-center"><span class="badge bg-success">Distribué</span></td>
-            <td class="text-center">
-              <button class="btn btn-sm btn-outline-warning" title="Modifier"><i class="bi bi-pencil"></i></button>
-              <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
-            </td>
-          </tr>
-          <tr>
-            <td class="text-muted">3</td>
-            <td>14/02/2026</td>
-            <td class="fw-semibold">Association Entraide</td>
-            <td><span class="badge bg-secondary">Matériaux</span></td>
-            <td>Tôle</td>
-            <td class="text-end">100</td>
-            <td>Pièces</td>
-            <td class="text-center"><span class="badge bg-warning text-dark">En attente</span></td>
-            <td class="text-center">
-              <button class="btn btn-sm btn-outline-warning" title="Modifier"><i class="bi bi-pencil"></i></button>
-              <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
-            </td>
-          </tr>
-          <tr>
-            <td class="text-muted">4</td>
-            <td>13/02/2026</td>
-            <td class="fw-semibold">Banque BOA</td>
-            <td><span class="badge bg-primary">Argent</span></td>
-            <td>—</td>
-            <td class="text-end">5 000 000</td>
-            <td>Ar</td>
-            <td class="text-center"><span class="badge bg-success">Distribué</span></td>
-            <td class="text-center">
-              <button class="btn btn-sm btn-outline-warning" title="Modifier"><i class="bi bi-pencil"></i></button>
-              <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
-            </td>
-          </tr>
-          <tr>
-            <td class="text-muted">5</td>
-            <td>12/02/2026</td>
-            <td class="fw-semibold">ONG Care International</td>
-            <td><span class="badge bg-info">Nature</span></td>
-            <td>Riz</td>
-            <td class="text-end">1 000</td>
-            <td>kg</td>
-            <td class="text-center"><span class="badge bg-warning text-dark">En attente</span></td>
-            <td class="text-center">
-              <button class="btn btn-sm btn-outline-warning" title="Modifier"><i class="bi bi-pencil"></i></button>
-              <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
-            </td>
-          </tr>
+          <?php if (!empty($dons)): ?>
+            <?php foreach ($dons as $row): ?>
+              <?php
+                $cat = (string)($row['categorie'] ?? '');
+                $catLower = strtolower($cat);
+                $catBadge = 'bg-secondary';
+                if (strpos($catLower, 'nature') !== false) $catBadge = 'bg-info';
+                elseif (strpos($catLower, 'mater') !== false) $catBadge = 'bg-secondary';
+                elseif (strpos($catLower, 'argent') !== false) $catBadge = 'bg-primary';
+
+                $etat = (string)($row['etat'] ?? '');
+                $etatLower = strtolower($etat);
+                $etatBadge = 'bg-secondary';
+                if (strpos($etatLower, 'attente') !== false) $etatBadge = 'bg-warning text-dark';
+                elseif (strpos($etatLower, 'distrib') !== false) $etatBadge = 'bg-success';
+              ?>
+              <tr>
+                <td class="text-muted"><?= $esc($row['id_don']) ?></td>
+                <td><?= $esc(date('d/m/Y', strtotime($row['date_don']))) ?></td>
+                <td class="fw-semibold"><?= $esc($row['donateur']) ?></td>
+                <td><span class="badge <?= $catBadge ?>"><?= $esc($cat !== '' ? $cat : '—') ?></span></td>
+                <td><?= $esc($row['article'] ?? '—') ?></td>
+                <td class="text-end"><?= $esc($fmtQty($row['quantite'])) ?></td>
+                <td class="text-center"><span class="badge <?= $etatBadge ?>"><?= $esc($etat !== '' ? $etat : '—') ?></span></td>
+                <td class="text-center">
+                  <a class="btn btn-sm btn-outline-warning" href="<?= $baseUrl ?>/dons?edit=<?= $esc($row['id_don']) ?>" title="Modifier"><i class="bi bi-pencil"></i></a>
+                  <form method="post" action="<?= $baseUrl ?>/dons/<?= $esc($row['id_don']) ?>/delete" class="d-inline" onsubmit="return confirm('Supprimer ce don ?');">
+                    <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <tr>
+              <td colspan="8" class="text-center text-muted py-4">Aucun don enregistré.</td>
+            </tr>
+          <?php endif; ?>
         </tbody>
       </table>
     </div>
-  </div>
-  <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-    <small class="text-muted">Affichage 1-5 sur 5 résultats</small>
-    <nav>
-      <ul class="pagination pagination-sm mb-0">
-        <li class="page-item disabled"><a class="page-link" href="#">&laquo;</a></li>
-        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-        <li class="page-item disabled"><a class="page-link" href="#">&raquo;</a></li>
-      </ul>
-    </nav>
   </div>
 </div>
 

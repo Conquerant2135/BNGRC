@@ -33,7 +33,7 @@
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item"><a class="nav-link" href="<?=BASE_URL ?>/dashboard">Tableau de bord</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?=BASE_URL ?>/besoins">Besoins</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?=BASE_URL ?>/besoin">Besoins</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?=BASE_URL ?>/dons">Dons</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?=BASE_URL ?>/villes">Villes</a></li>
                 </ul>

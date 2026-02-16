@@ -16,7 +16,7 @@ ob_start();
     <h6 class="mb-0"><i class="bi bi-plus-circle me-2 text-primary"></i>Enregistrer un nouveau besoin</h6>
   </div>
   <div class="card-body">
-    <form id="formBesoin" method="post" action="/besoin" novalidate>
+    <form id="formBesoin" method="post" action="<?= BASE_URL ?>/besoin" novalidate>
       <div class="row g-3">
         <div class="col-md-4">
           <label for="ville" class="form-label fw-semibold">Ville <span class="text-danger">*</span></label>

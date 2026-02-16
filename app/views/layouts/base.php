@@ -65,7 +65,7 @@ function isActive($path) {
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link sidebar-link <?= isActive('/besoins') ?>" href="<?= $baseUrl ?>/besoins">
+          <a class="nav-link sidebar-link <?= isActive('/besoin') ?>" href="<?= $baseUrl ?>/besoin">
             <i class="bi bi-clipboard-pulse"></i>
             <span>Saisie des besoins</span>
           </a>

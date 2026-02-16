@@ -24,9 +24,10 @@ Flight::route('GET /dispatch', function () {
 });
 
 // Gestion des villes
-Flight::route('GET /villes', function () {
-    Flight::render('villes');
-});
+Flight::route('GET /villes', ['VilleController', 'index']);
+Flight::route('POST /villes', ['VilleController', 'store']);
+Flight::route('POST /villes/@id/update', ['VilleController', 'update']);
+Flight::route('POST /villes/@id/delete', ['VilleController', 'delete']);
 
 // Gestion des types d'articles
 Flight::route('GET /articles', function () {

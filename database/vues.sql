@@ -20,3 +20,17 @@ LEFT JOIN bngrc_categorie c ON d.id_cat = c.id
 LEFT JOIN bngrc_article a ON d.id_article = a.id
 LEFT JOIN bngrc_etat_don e ON d.id_etat = e.id
 ORDER BY d.date_don DESC, d.id_don DESC;
+
+CREATE OR REPLACE VIEW v_total_argent AS
+SELECT SUM(quantite) as total FROM bngrc_don bd
+WHERE bd.id_cat = (SELECT id FROM bngrc_categorie WHERE nom = 'Argent');
+
+CREATE OR REPLACE VIEW v_total_depense AS
+SELECT
+COALESCE(SUM(bad.quantite_attribuee),0)
+  FROM bngrc_attribution_don bad
+JOIN bngrc_besoin bb ON bb.id_besoin = bad.id_besoin 
+JOIN bngrc_article ba ON ba.id = bb.id_article
+WHERE ba.id_cat = (SELECT id FROM bngrc_categorie WHERE nom = 'Argent');
+
+

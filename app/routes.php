@@ -29,6 +29,10 @@ Flight::route('POST /dons', ['DonController', 'store']);
 Flight::route('POST /dons/@id/update', ['DonController', 'update']);
 Flight::route('POST /dons/@id/delete', ['DonController', 'delete']);
 
+// Achat de produits
+Flight::route('GET /achats', ['DonController', 'achatProduit']);
+Flight::route('POST /achats/valider', ['DonController', 'validationAchat']);
+
 // Simulation du dispatch
 Flight::route('GET /dispatch', [DispatchController::class, 'index']);
 

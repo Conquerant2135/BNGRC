@@ -94,3 +94,18 @@ CREATE TABLE bngrc_stock (
   quantite DECIMAL(10, 3) NOT NULL,
   CONSTRAINT fk_stock_article FOREIGN KEY (id_article) REFERENCES bngrc_article (id)
 );
+
+CREATE TABLE bngrc_montant_taxe (
+  id INT AUTO_INCREMENT PRIMARY KEY , 
+  valeur DECIMAL(10,3)
+);
+
+CREATE TABLE bngrc_achat_produit (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_article INT,
+  quantite DECIMAL(10,3) NOT NULL,
+  valeur_taux DECIMAL(5,2) NOT NULL DEFAULT 0,
+  montant_total DECIMAL(12,3) NOT NULL,
+  date_achat DATE NOT NULL,
+  CONSTRAINT fk_id_article FOREIGN KEY  (id_article) REFERENCES bngrc_article(id)
+);

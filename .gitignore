@@ -1,3 +1,4 @@
 misc
+app/config.php
 vendor
 composer.lock

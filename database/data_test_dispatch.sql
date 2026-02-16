@@ -4,7 +4,20 @@
 -- ============================================================
 
 USE bngrc;
+INSERT INTO bngrc_region (nom) 
+VALUES 
+    ('Analamanga'),
+    ('Diana');
 
+INSERT INTO bngrc_ville (id_region, nom_ville, nb_sinistres) 
+VALUES 
+    (1, 'Antananarivo Renivohitra', 450),
+    (1, 'Ambohidratrimo', 120);
+
+INSERT INTO bngrc_ville (id_region, nom_ville, nb_sinistres) 
+VALUES 
+    (2, 'Antsiranana', 85),
+    (2, 'Ambilobe', 210);
 -- Unités
 INSERT INTO bngrc_unite (id, libelle) VALUES
   (1, 'kg'),
@@ -79,3 +92,11 @@ INSERT INTO bngrc_don (donateur, date_don, id_cat, id_article, quantite, id_etat
   ('Ambassade de France',       '2026-02-10', 1, 3, 300,  1),   -- 300 L Eau
   ('Entreprise STAR',           '2026-02-11', 1, 1, 200,  1),   -- 200 kg Riz
   ('Don gouvernemental',        '2026-02-12', 2, 7, 80,   1);   -- 80 pièces Bois
+
+INSERT INTO bngrc_stock (id_article, quantite)
+VALUES
+    (1, 120.000),
+    (2, 30.000);
+
+
+

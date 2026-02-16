@@ -69,7 +69,7 @@ class VilleController {
     $res = $svc->validate($input);
     if ($res['ok']) {
       $repo->create($res['values']);
-      Flight::redirect(BASE_URL . '/villes?success=1');
+      Flight::redirect( '/villes?success=1');
       return;
     }
 

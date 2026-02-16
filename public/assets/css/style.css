@@ -1,0 +1,309 @@
+/* ===========================================
+   BNGRC — Suivi des collectes et distributions
+   Custom Styles
+   =========================================== */
+
+/* ---------- CSS Variables ---------- */
+:root {
+  --bngrc-dark:    #1a2332;
+  --bngrc-primary: #1e3a5f;
+  --bngrc-accent:  #d4380d;
+  --bngrc-green:   #2e7d32;
+  --sidebar-width: 250px;
+  --sidebar-bg:    #1a2332;
+  --topbar-height: 68px;
+}
+
+/* ---------- Global ---------- */
+html, body {
+  height: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f2f5;
+}
+
+/* ---------- Top Navbar ---------- */
+.bg-bngrc {
+  background: linear-gradient(135deg, var(--bngrc-dark) 0%, var(--bngrc-primary) 100%) !important;
+}
+
+.navbar {
+  min-height: var(--topbar-height);
+  z-index: 1050;
+}
+
+.navbar-brand img {
+  transition: transform 0.2s;
+}
+.navbar-brand img:hover {
+  transform: scale(1.05);
+}
+
+.logo-mi {
+  filter: brightness(0) invert(1);
+}
+
+/* ---------- Sidebar ---------- */
+#wrapper {
+  min-height: calc(100vh - var(--topbar-height));
+}
+
+#sidebar {
+  width: var(--sidebar-width);
+  min-height: calc(100vh - var(--topbar-height));
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease;
+  flex-shrink: 0;
+}
+
+.bg-sidebar {
+  background: var(--sidebar-bg) !important;
+}
+
+.sidebar-link {
+  color: rgba(255,255,255,0.7) !important;
+  padding: 0.65rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.sidebar-link:hover {
+  color: #fff !important;
+  background: rgba(255,255,255,0.1);
+}
+
+.sidebar-link.active {
+  color: #fff !important;
+  background: var(--bngrc-accent);
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(212, 56, 13, 0.3);
+}
+
+.sidebar-link i {
+  font-size: 1.1rem;
+  width: 22px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Sidebar collapsed state */
+#sidebar.collapsed {
+  margin-left: calc(-1 * var(--sidebar-width));
+}
+
+/* ---------- Page Content ---------- */
+#page-content {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--topbar-height));
+  overflow-x: auto;
+}
+
+.content-header {
+  min-height: 42px;
+}
+
+/* ---------- Stat Cards ---------- */
+.card-stat {
+  border-radius: 0.75rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card-stat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1) !important;
+}
+
+.stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+/* Soft backgrounds */
+.bg-primary-soft {
+  background: rgba(30, 58, 95, 0.12) !important;
+}
+.bg-danger-soft {
+  background: rgba(212, 56, 13, 0.12) !important;
+}
+.bg-success-soft {
+  background: rgba(46, 125, 50, 0.12) !important;
+}
+.bg-warning-soft {
+  background: rgba(255, 193, 7, 0.15) !important;
+}
+.bg-info-soft {
+  background: rgba(13, 202, 240, 0.12) !important;
+}
+
+.text-danger-soft {
+  color: var(--bngrc-accent) !important;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  border-radius: 0.75rem;
+}
+.card-header {
+  border-radius: 0.75rem 0.75rem 0 0 !important;
+}
+
+/* ---------- Tables ---------- */
+.table > thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.table th {
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+/* ---------- Progress Bars ---------- */
+.progress {
+  border-radius: 0.5rem;
+  background: #e9ecef;
+}
+.progress-bar {
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* ---------- Badges ---------- */
+.badge {
+  font-weight: 500;
+  font-size: 0.78rem;
+}
+
+/* ---------- Forms ---------- */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--bngrc-primary);
+  box-shadow: 0 0 0 0.2rem rgba(30, 58, 95, 0.15);
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+  background: var(--bngrc-primary) !important;
+  border-color: var(--bngrc-primary) !important;
+}
+.btn-primary:hover {
+  background: #15304f !important;
+  border-color: #15304f !important;
+}
+
+/* ---------- Breadcrumb ---------- */
+.breadcrumb-item a {
+  color: var(--bngrc-primary);
+  text-decoration: none;
+}
+.breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Carousel ---------- */
+.carousel-inner {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+/* ---------- Scrollbar ---------- */
+#sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+#sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 2px;
+}
+
+/* ---------- Alert Info ---------- */
+.alert-info {
+  background: rgba(13, 202, 240, 0.08);
+  border: 1px solid rgba(13, 202, 240, 0.2);
+  color: #055160;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  font-size: 0.85rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 991.98px) {
+  #sidebar {
+    position: fixed;
+    top: var(--topbar-height);
+    left: 0;
+    z-index: 1040;
+    margin-left: calc(-1 * var(--sidebar-width));
+    height: calc(100vh - var(--topbar-height));
+    overflow-y: auto;
+  }
+  #sidebar.show {
+    margin-left: 0;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.3);
+  }
+
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: var(--topbar-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 1035;
+  }
+  .sidebar-overlay.show {
+    display: block;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .navbar-brand img {
+    height: 36px !important;
+  }
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.1rem;
+  }
+}
+
+/* ---------- Animation ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+main .card, main .alert {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* ---------- Print ---------- */
+@media print {
+  #sidebar, .navbar, footer, .btn, .content-header { display: none !important; }
+  #page-content { margin: 0; padding: 0; }
+  .card { box-shadow: none !important; border: 1px solid #ddd !important; }
+}

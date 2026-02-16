@@ -29,18 +29,13 @@ region :
 			
 	[ ] page  tableau bord :
 		liste villes +(besoins ) +dons attribues a chaque ville
-		
-		
 	
 	[ ] besoin  possede un prix unitaire 
 	
 	besoin 
 		+ [ ] prix unitaire  // ne change jamais 
-		+ [ ] quantite     
- 
- 
- 
- 
+		+ [ ] quantite
+
  -------------------
  	region : 
  		+ [ ] id_ region  
@@ -51,27 +46,56 @@ region :
  		+ [ ] nombres de sinistres  
  		+ [ ] besoins    
  		+ [ ] dons
- 	besoin :
- 		+ [ ] id_besoin 
- 		+ [ ] type { nature , materiaux ,argent}
- 		+ [ ] nom [ riz ,  huile ,tole ,clou  ]
- 		+ [ ] prix unitaire fixe 
- 		+ [ ] quantite 
- 		+ [ ] montant totale 
- 		
- 	Don : 
- 
-		+ [ ] id_don 
-		+ [ ] date_don
 
-		+ [ ] type (nature / materiaux / argent)
+<!-- c'est ici que les problemes commencent -->
 
+	unite :
+		+ [ ] id 
+		+ [ ] libelle
+
+	categorie :
+		+ [ ] id
 		+ [ ] nom
 
-		+ [ ] quantite			//diminue a chaque 
+	article : 
+		+ [ ] id 
+		+ [ ] nom
+		+ [ ] id_unite
+		+ [ ] prix_unitaire
 
-  		+ [ ] montant (si argent)
-  		
+	traboina : 
+		+ [ ] id
+		+ [ ] nom 
+		+ [ ] adresse
+		+ [ ] numero
+
+ 	besoin :
+ 		+ [ ] id_besoin 
+		+ [ ] id_article 
+		+ [ ] id_ville
+ 		+ [ ] quantite
+ 		+ [ ] montant_totale 
+		+ [ ] id_traboina
+		+ [ ] date_demande 
+
+ 	don :
+		+ [ ] id_don
+		+ [ ] donateur 
+		+ [ ] date_don
+		+ [ ] id_cat
+		+ [ ] id_article
+		+ [ ] quantite
+
+	attribution_don :
+		+ [ ] id 
+		+ [ ] id_traboina
+		+ [ ] id_don
+
+	stock : 
+		+ [ ] id
+		+ [ ] quantite
+		+ [ ] 
+
   		  Le sujet dit :
 
 		" On simule le dispatch des dons par ordre de date et de saisie "

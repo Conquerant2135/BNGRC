@@ -13,9 +13,10 @@ Flight::route('GET /besoins', function () {
 });
 
 // Saisie des dons
-Flight::route('GET /dons', function () {
-    Flight::render('dons');
-});
+Flight::route('GET /dons', ['DonController', 'index']);
+Flight::route('POST /dons', ['DonController', 'store']);
+Flight::route('POST /dons/@id/update', ['DonController', 'update']);
+Flight::route('POST /dons/@id/delete', ['DonController', 'delete']);
 
 // Simulation du dispatch
 Flight::route('GET /dispatch', function () {

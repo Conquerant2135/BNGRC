@@ -135,3 +135,8 @@ region :
 			+ [ ] Total dons attribués
 
 
+design css <!-- Sarobidy -->
+	+ [x] recupérationn des images utiles
+	+ [x] utilisation de bootstrap
+	+ [x] mise en page des view
+	+ [x] création de son propre template 

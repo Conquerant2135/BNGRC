@@ -35,9 +35,10 @@ Flight::route('GET /dispatch', [DispatchController::class, 'index']);
 Flight::route('POST /dispatch/valider', [DispatchController::class, 'valider']);
 
 // Gestion des villes
-Flight::route('GET /villes', function () {
-    Flight::render('villes');
-});
+Flight::route('GET /villes', ['VilleController', 'index']);
+Flight::route('POST /villes', ['VilleController', 'store']);
+Flight::route('POST /villes/@id/update', ['VilleController', 'update']);
+Flight::route('POST /villes/@id/delete', ['VilleController', 'delete']);
 
 // Gestion des types d'articles
 Flight::route('GET /articles', [ArticleController::class, 'index']);

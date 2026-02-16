@@ -14,6 +14,9 @@ Flight::register('db', 'PDO', array(
 require_once __DIR__ . '/repositories/DonRepository.php';
 require_once __DIR__ . '/services/DonService.php';
 require_once __DIR__ . '/controllers/DonController.php';
+require_once __DIR__ . '/repositories/VilleRepository.php';
+require_once __DIR__ . '/services/VilleService.php';
+require_once __DIR__ . '/controllers/VilleController.php';
 
 Flight::set('flight.views.path', __DIR__ . '/views');
 

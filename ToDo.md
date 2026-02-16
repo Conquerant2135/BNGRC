@@ -152,6 +152,23 @@ region :
        + [X] index() // Affiche la liste des dons
        + [X] update($id) // Met à jour un don existant
 	   + [X] delete($id) // Supprime un don
++ [X]ajout data.sql 
+
+	+ [X] Gestion villes.php (CRUD)
+		+ [X] VilleController.php
+    		+ [X] index() // Affiche la liste des villes
+			+ [X] store() // Crée une nouvelle ville
+			+ [X] update($id) // Met à jour une ville existante
+			+ [X] delete($id) // Supprime une ville
+		+ [X] VilleRepository.php
+    		+ [X] listAll()
+    		+ [X] findById($id)
+    		+ [X] create($data)
+    		+ [X] update($id, $data)
+			+ [X] delete($id)
+			+ [X]listRegions()
+		+ [X] VilleService.php
+    		+ [X] validate($data)
 + [X]ajout data design css <!-- Sarobidy -->
 	+ [x] recupérationn des images utiles
 	+ [x] utilisation de bootstrap

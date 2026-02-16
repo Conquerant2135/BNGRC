@@ -101,7 +101,7 @@ function isActive($path) {
 
       <!-- Sidebar footer -->
       <div class="sidebar-footer mt-auto p-3 text-center">
-        <small class="text-white-50">BNGRC &copy; <?= date('Y') ?></small>
+        <small class="text-white-50">ETU003951 ETU003993 ETU004367 &copy; <?= date('Y') ?></small>
       </div>
     </nav>
 
@@ -151,7 +151,7 @@ function isActive($path) {
             <strong>BNGRC</strong> — Bureau National de Gestion des Risques et des Catastrophes
           </span>
           <span>
-            Ministère de l'Intérieur — République de Madagascar &copy; <?= date('Y') ?>
+            ETU003951 ETU003993 ETU004367 &copy; <?= date('Y') ?>
           </span>
         </div>
       </footer>

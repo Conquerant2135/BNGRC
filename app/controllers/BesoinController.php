@@ -12,13 +12,13 @@ class BesoinController
     {
         $catRepo = new CategorieRepository();
         $articleRepo = new ArticleRepository();
-        $villeRepo = new VilleRepository();
+        $villeRepo = new VilleRepository(Flight::db());
         $besoinService = new BesoinService();
 
         Flight::render('besoins.php', [
             'cat' => $catRepo->all(),
             'article' => $articleRepo->all(),
-            'ville' => $villeRepo->all(),
+            'ville' => $villeRepo->listAll(),
             'besoins' => $besoinService->all()
         ]);
     }

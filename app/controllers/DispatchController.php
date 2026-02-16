@@ -13,8 +13,6 @@ class DispatchController
      */
     public static function index()
     {
-        $db = Flight::db();
-
         // Paramètres de filtre
         $dateDebut = $_GET['date_debut'] ?? null;
         $dateFin   = $_GET['date_fin']   ?? date('Y-m-d');
@@ -26,8 +24,11 @@ class DispatchController
         $nbOps     = 0;
 
         if ($lancer) {
-            $resultats = self::simulerDispatch($db, $dateDebut, $dateFin, $mode);
-            $resume    = self::calculerResume($db, $resultats);
+            $donRepo    = new DonRepository(Flight::db());
+            $besoinRepo = new BesoinRepository();
+
+            $resultats = self::simulerDispatch($donRepo, $besoinRepo, $dateDebut, $dateFin, $mode);
+            $resume    = self::calculerResume($besoinRepo, $resultats);
             $nbOps     = count($resultats);
         }
 
@@ -47,64 +48,41 @@ class DispatchController
      */
     public static function valider()
     {
-        $db = Flight::db();
+        $donRepo         = new DonRepository(Flight::db());
+        $besoinRepo      = new BesoinRepository();
+        $attributionRepo = new AttributionRepository();
 
         $dateDebut = $_POST['date_debut'] ?? null;
         $dateFin   = $_POST['date_fin']   ?? date('Y-m-d');
         $mode      = $_POST['mode']       ?? 'fifo';
 
-        $resultats = self::simulerDispatch($db, $dateDebut, $dateFin, $mode);
+        $resultats = self::simulerDispatch($donRepo, $besoinRepo, $dateDebut, $dateFin, $mode);
 
         if (empty($resultats)) {
             self::redir('/dispatch?error=' . urlencode('Aucune attribution à valider.'));
         }
 
         try {
-            $db->beginTransaction();
-
-            $stmtAttrib = $db->prepare(
-                "INSERT INTO bngrc_attribution_don (id_don, id_besoin, quantite_attribuee, date_attribution)
-                 VALUES (:id_don, :id_besoin, :qte, CURDATE())"
-            );
+            $attributionRepo->beginTransaction();
 
             foreach ($resultats as $r) {
-                $stmtAttrib->execute([
-                    ':id_don'    => $r['id_don'],
-                    ':id_besoin' => $r['id_besoin'],
-                    ':qte'       => $r['quantite_attribuee'],
-                ]);
+                $attributionRepo->insert($r['id_don'], $r['id_besoin'], $r['quantite_attribuee']);
             }
 
-            // Mettre à jour les besoins entièrement satisfaits
-            $db->exec("
-                UPDATE bngrc_besoin b
-                SET est_satisfait = 1
-                WHERE (
-                    SELECT COALESCE(SUM(a.quantite_attribuee), 0)
-                    FROM bngrc_attribution_don a
-                    WHERE a.id_besoin = b.id_besoin
-                ) >= b.quantite
-            ");
+            // Marquer les besoins entièrement satisfaits
+            $attributionRepo->marquerBesoinsSatisfaits();
 
-            // Mettre à jour l'état des dons entièrement distribués (id_etat = 2 si existant)
-            $etatDistribue = $db->query("SELECT id FROM bngrc_etat_don WHERE nom LIKE '%distribu%' OR nom LIKE '%attribu%' LIMIT 1")->fetchColumn();
+            // Marquer les dons entièrement distribués
+            $etatDistribue = $donRepo->findEtatDistribue();
             if ($etatDistribue) {
-                $db->exec("
-                    UPDATE bngrc_don d
-                    SET id_etat = {$etatDistribue}
-                    WHERE (
-                        SELECT COALESCE(SUM(a.quantite_attribuee), 0)
-                        FROM bngrc_attribution_don a
-                        WHERE a.id_don = d.id_don
-                    ) >= d.quantite
-                ");
+                $donRepo->marquerDistribues($etatDistribue);
             }
 
-            $db->commit();
+            $attributionRepo->commit();
 
             self::redir('/dispatch?success=1');
         } catch (Exception $e) {
-            $db->rollBack();
+            $attributionRepo->rollBack();
             self::redir('/dispatch?error=' . urlencode($e->getMessage()));
         }
     }
@@ -112,63 +90,13 @@ class DispatchController
     /**
      * Simuler le dispatch des dons par ordre chronologique (FIFO ou proportionnel)
      */
-    private static function simulerDispatch(PDO $db, ?string $dateDebut, ?string $dateFin, string $mode): array
+    private static function simulerDispatch(DonRepository $donRepo, BesoinRepository $besoinRepo, ?string $dateDebut, ?string $dateFin, string $mode): array
     {
         // ── 1. Récupérer les dons disponibles ──
-        $sqlDons = "
-            SELECT d.id_don, d.donateur, d.date_don, d.id_article, d.quantite,
-                   a.nom AS article_nom, u.libelle AS unite,
-                   COALESCE(att_sum.total_attribue, 0) AS deja_attribue
-            FROM bngrc_don d
-            JOIN bngrc_article a ON a.id = d.id_article
-            LEFT JOIN bngrc_unite u ON u.id = a.id_unite
-            LEFT JOIN (
-                SELECT id_don, SUM(quantite_attribuee) AS total_attribue
-                FROM bngrc_attribution_don
-                GROUP BY id_don
-            ) att_sum ON att_sum.id_don = d.id_don
-        ";
-
-        $conditions = [];
-        $params     = [];
-
-        if ($dateDebut) {
-            $conditions[]          = "d.date_don >= :date_debut";
-            $params[':date_debut'] = $dateDebut;
-        }
-        if ($dateFin) {
-            $conditions[]        = "d.date_don <= :date_fin";
-            $params[':date_fin'] = $dateFin;
-        }
-
-        // Ne prendre que les dons ayant encore du stock à distribuer
-        $conditions[] = "(d.quantite - COALESCE(att_sum.total_attribue, 0)) > 0";
-
-        $sqlDons .= " WHERE " . implode(' AND ', $conditions);
-        $sqlDons .= " ORDER BY d.date_don ASC, d.id_don ASC";
-
-        $stmtDons = $db->prepare($sqlDons);
-        $stmtDons->execute($params);
-        $dons = $stmtDons->fetchAll(PDO::FETCH_ASSOC);
+        $dons = $donRepo->disponibles($dateDebut, $dateFin);
 
         // ── 2. Récupérer les besoins non satisfaits ──
-        $sqlBesoins = "
-            SELECT b.id_besoin, b.id_article, b.id_ville, b.quantite, b.date_demande,
-                   v.nom_ville, a.nom AS article_nom,
-                   COALESCE(att_sum.total_attribue, 0) AS deja_attribue
-            FROM bngrc_besoin b
-            JOIN bngrc_ville v ON v.id_ville = b.id_ville
-            JOIN bngrc_article a ON a.id = b.id_article
-            LEFT JOIN (
-                SELECT id_besoin, SUM(quantite_attribuee) AS total_attribue
-                FROM bngrc_attribution_don
-                GROUP BY id_besoin
-            ) att_sum ON att_sum.id_besoin = b.id_besoin
-            WHERE b.est_satisfait = 0
-              AND (b.quantite - COALESCE(att_sum.total_attribue, 0)) > 0
-            ORDER BY b.date_demande ASC, b.id_besoin ASC
-        ";
-        $besoins = $db->query($sqlBesoins)->fetchAll(PDO::FETCH_ASSOC);
+        $besoins = $besoinRepo->nonSatisfaits();
 
         // Index des quantités restantes pour la simulation (sans modifier la BDD)
         $besoinRestant = [];
@@ -261,21 +189,10 @@ class DispatchController
     /**
      * Calculer le résumé par ville après simulation
      */
-    private static function calculerResume(PDO $db, array $resultats): array
+    private static function calculerResume(BesoinRepository $besoinRepo, array $resultats): array
     {
         // Récupérer tous les besoins non satisfaits avec leur état actuel
-        $besoins = $db->query("
-            SELECT b.id_besoin, b.id_ville, b.quantite, v.nom_ville,
-                   COALESCE(att_sum.total_attribue, 0) AS deja_attribue
-            FROM bngrc_besoin b
-            JOIN bngrc_ville v ON v.id_ville = b.id_ville
-            LEFT JOIN (
-                SELECT id_besoin, SUM(quantite_attribuee) AS total_attribue
-                FROM bngrc_attribution_don
-                GROUP BY id_besoin
-            ) att_sum ON att_sum.id_besoin = b.id_besoin
-            WHERE b.est_satisfait = 0
-        ")->fetchAll(PDO::FETCH_ASSOC);
+        $besoins = $besoinRepo->nonSatisfaitsResume();
 
         // Attributions simulées par besoin
         $simAttrib = [];

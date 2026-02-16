@@ -56,4 +56,12 @@ class VilleRepository {
   public function listRegions() {
     return $this->pdo->query("SELECT id, nom FROM bngrc_region ORDER BY nom")->fetchAll();
   }
+
+  /**
+   * Nombre de villes sinistrées (nb_sinistres > 0)
+   */
+  public function countSinistrees(): int
+  {
+      return (int) $this->pdo->query("SELECT COUNT(*) FROM bngrc_ville WHERE nb_sinistres > 0")->fetchColumn();
+  }
 }

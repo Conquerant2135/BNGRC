@@ -12,9 +12,16 @@ Flight::register('db', 'PDO', array(
 ));
 
 require_once __DIR__ . '/repositories/DonRepository.php';
+require_once __DIR__ . '/repositories/VilleRepository.php';
+require_once __DIR__ . '/repositories/ArticleRepository.php';
+require_once __DIR__ . '/repositories/BesoinRepository.php';
+require_once __DIR__ . '/repositories/CategorieRepository.php';
+require_once __DIR__ . '/repositories/UniteRepository.php';
+require_once __DIR__ . '/repositories/AttributionRepository.php';
+require_once __DIR__ . '/repositories/TraboinaRepository.php';
+
 require_once __DIR__ . '/services/DonService.php';
 require_once __DIR__ . '/controllers/DonController.php';
-require_once __DIR__ . '/repositories/VilleRepository.php';
 require_once __DIR__ . '/services/VilleService.php';
 require_once __DIR__ . '/controllers/VilleController.php';
 

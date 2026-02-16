@@ -93,4 +93,77 @@ class BesoinRepository
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Nombre total de besoins
+     */
+    public function countAll(): int
+    {
+        return (int) $this->pdo->query("SELECT COUNT(*) FROM bngrc_besoin")->fetchColumn();
+    }
+
+    /**
+     * Besoins par ville et catégorie avec attributions (pour le dashboard)
+     */
+    public function parVilleAvecAttributions(): array
+    {
+        $sql = "SELECT v.id_ville, v.nom_ville, r.nom AS region, v.nb_sinistres,
+                       c.nom AS categorie,
+                       COALESCE(SUM(b.quantite), 0) AS total_besoin,
+                       COALESCE(SUM(att.total_attribue), 0) AS total_recu
+                FROM bngrc_ville v
+                JOIN bngrc_region r ON r.id = v.id_region
+                LEFT JOIN bngrc_besoin b ON b.id_ville = v.id_ville
+                LEFT JOIN bngrc_article a ON a.id = b.id_article
+                LEFT JOIN bngrc_categorie c ON c.id = a.id_cat
+                LEFT JOIN (
+                    SELECT ad.id_besoin, SUM(ad.quantite_attribuee) AS total_attribue
+                    FROM bngrc_attribution_don ad
+                    GROUP BY ad.id_besoin
+                ) att ON att.id_besoin = b.id_besoin
+                WHERE v.nb_sinistres > 0
+                GROUP BY v.id_ville, v.nom_ville, r.nom, v.nb_sinistres, c.nom
+                ORDER BY v.nom_ville, c.nom";
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Besoins non satisfaits avec quantités déjà attribuées (pour dispatch simulation)
+     */
+    public function nonSatisfaits(): array
+    {
+        $sql = "SELECT b.id_besoin, b.id_article, b.id_ville, b.quantite, b.date_demande,
+                       v.nom_ville, a.nom AS article_nom,
+                       COALESCE(att_sum.total_attribue, 0) AS deja_attribue
+                FROM bngrc_besoin b
+                JOIN bngrc_ville v ON v.id_ville = b.id_ville
+                JOIN bngrc_article a ON a.id = b.id_article
+                LEFT JOIN (
+                    SELECT id_besoin, SUM(quantite_attribuee) AS total_attribue
+                    FROM bngrc_attribution_don
+                    GROUP BY id_besoin
+                ) att_sum ON att_sum.id_besoin = b.id_besoin
+                WHERE b.est_satisfait = 0
+                  AND (b.quantite - COALESCE(att_sum.total_attribue, 0)) > 0
+                ORDER BY b.date_demande ASC, b.id_besoin ASC";
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Besoins non satisfaits avec attributions existantes (pour résumé dispatch)
+     */
+    public function nonSatisfaitsResume(): array
+    {
+        $sql = "SELECT b.id_besoin, b.id_ville, b.quantite, v.nom_ville,
+                       COALESCE(att_sum.total_attribue, 0) AS deja_attribue
+                FROM bngrc_besoin b
+                JOIN bngrc_ville v ON v.id_ville = b.id_ville
+                LEFT JOIN (
+                    SELECT id_besoin, SUM(quantite_attribuee) AS total_attribue
+                    FROM bngrc_attribution_don
+                    GROUP BY id_besoin
+                ) att_sum ON att_sum.id_besoin = b.id_besoin
+                WHERE b.est_satisfait = 0";
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

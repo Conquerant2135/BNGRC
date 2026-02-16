@@ -1,6 +1,9 @@
---
+-- Vue pour afficher les villes et le nombre de sinistres par région
+CREATE OR REPLACE VIEW vue_villes_par_region AS
 SELECT 
-    r.nom AS region,
+    r.nom,
+    r.id,
+    v.id_ville,
     v.nom_ville AS ville,
     v.nb_sinistres
 FROM bngrc_region r

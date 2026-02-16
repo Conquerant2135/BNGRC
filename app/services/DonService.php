@@ -3,6 +3,14 @@ class DonService {
   private $repo;
   public function __construct(DonRepository $repo) { $this->repo = $repo; }
 
+  private function strLength(string $value): int {
+    if (function_exists('mb_strlen')) {
+      return mb_strlen($value);
+    }
+
+    return strlen($value);
+  }
+
   public function validate(array $input) {
     $errors = [
       'donateur' => '',
@@ -22,7 +30,7 @@ class DonService {
       'id_etat' => trim((string)($input['id_etat'] ?? ''))
     ];
 
-    if (mb_strlen($values['donateur']) < 2) {
+    if ($this->strLength($values['donateur']) < 2) {
       $errors['donateur'] = "Le donateur est obligatoire (min 2 caractères).";
     }
 

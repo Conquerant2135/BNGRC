@@ -83,7 +83,7 @@ class DonController {
     $res = $svc->validate($input);
     if ($res['ok']) {
       $repo->create($res['values']);
-      Flight::redirect(BASE_URL . '/dons?success=1');
+      Flight::redirect( '/dons?success=1');
       return;
     }
 
@@ -106,7 +106,7 @@ class DonController {
     $svc = new DonService($repo);
 
     if (!ctype_digit((string)$id)) {
-      Flight::redirect(BASE_URL . '/dons?error=1');
+      Flight::redirect( '/dons?error=1');
       return;
     }
 
@@ -123,7 +123,7 @@ class DonController {
     $res = $svc->validate($input);
     if ($res['ok']) {
       $repo->update((int)$id, $res['values']);
-      Flight::redirect(BASE_URL . '/dons?success=2');
+      Flight::redirect('/dons?success=2');
       return;
     }
 
@@ -147,11 +147,11 @@ class DonController {
     $repo = new DonRepository($pdo);
 
     if (!ctype_digit((string)$id)) {
-      Flight::redirect(BASE_URL . '/dons?error=1');
+      Flight::redirect('/dons?error=1');
       return;
     }
 
     $repo->delete((int)$id);
-    Flight::redirect(BASE_URL . '/dons?success=3');
+    Flight::redirect('/dons?success=3');
   }
 }

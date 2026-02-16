@@ -3,6 +3,14 @@ class VilleService {
   private $repo;
   public function __construct(VilleRepository $repo) { $this->repo = $repo; }
 
+  private function strLength(string $value): int {
+    if (function_exists('mb_strlen')) {
+      return mb_strlen($value);
+    }
+
+    return strlen($value);
+  }
+
   public function validate(array $input) {
     $errors = [
       'nom_ville' => '',
@@ -16,7 +24,7 @@ class VilleService {
       'nb_sinistres' => trim((string)($input['nb_sinistres'] ?? '0'))
     ];
 
-    if (mb_strlen($values['nom_ville']) < 2) {
+    if ($this->strLength($values['nom_ville']) < 2) {
       $errors['nom_ville'] = "Le nom de la ville est obligatoire (min 2 caractères).";
     }
 

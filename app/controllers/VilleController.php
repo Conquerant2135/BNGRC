@@ -90,7 +90,7 @@ class VilleController {
     $svc = new VilleService($repo);
 
     if (!ctype_digit((string)$id)) {
-      Flight::redirect(BASE_URL . '/villes?error=1');
+      Flight::redirect( '/villes?error=1');
       return;
     }
 
@@ -104,7 +104,7 @@ class VilleController {
     $res = $svc->validate($input);
     if ($res['ok']) {
       $repo->update((int)$id, $res['values']);
-      Flight::redirect(BASE_URL . '/villes?success=2');
+      Flight::redirect('/villes?success=2');
       return;
     }
 
@@ -126,11 +126,11 @@ class VilleController {
     $repo = new VilleRepository($pdo);
 
     if (!ctype_digit((string)$id)) {
-      Flight::redirect(BASE_URL . '/villes?error=1');
+      Flight::redirect('/villes?error=1');
       return;
     }
 
     $repo->delete((int)$id);
-    Flight::redirect(BASE_URL . '/villes?success=3');
+    Flight::redirect('/villes?success=3');
   }
 }

@@ -16,91 +16,49 @@ ob_start();
     <h6 class="mb-0"><i class="bi bi-plus-circle me-2 text-primary"></i>Enregistrer un nouveau besoin</h6>
   </div>
   <div class="card-body">
-    <form id="formBesoin" method="post" novalidate>
+    <form id="formBesoin" method="post" action="/besoin" novalidate>
       <div class="row g-3">
-        <!-- Ville -->
         <div class="col-md-4">
           <label for="ville" class="form-label fw-semibold">Ville <span class="text-danger">*</span></label>
-          <select class="form-select" id="ville" name="ville_id" required>
-            <option value="">— Sélectionner une ville —</option>
-            <option value="1">Antsirabe — Vakinankaratra</option>
-            <option value="2">Mananjary — Vatovavy</option>
-            <option value="3">Toamasina — Atsinanana</option>
-            <option value="4">Morondava — Menabe</option>
-            <option value="5">Farafangana — Atsimo-Atsinanana</option>
+          <select class="form-select" id="ville" name="id_ville" required>
+            <?php foreach ($ville as $v) {  ?>
+              <option value="<?= $v['id_ville'] ?>"><?= htmlspecialchars($v['nom_ville']) ?></option>
+            <?php } ?>
           </select>
           <div class="invalid-feedback">Veuillez sélectionner une ville.</div>
         </div>
 
-        <!-- Type de besoin -->
         <div class="col-md-4">
-          <label for="typeBesoin" class="form-label fw-semibold">Type de besoin <span class="text-danger">*</span></label>
-          <select class="form-select" id="typeBesoin" name="type_besoin" required>
-            <option value="">— Sélectionner —</option>
-            <option value="nature">🍚 En nature (riz, huile, ...)</option>
-            <option value="materiaux">🔧 En matériaux (tôle, clous, ...)</option>
-            <option value="argent">💰 En argent</option>
+          <label for="categorie" class="form-label fw-semibold">Catégorie <span class="text-danger">*</span></label>
+          <select class="form-select" id="categorie" name="id_cat" required>
+            <?php foreach ($cat as $c) {  ?>
+              <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['nom']) ?></option>
+            <?php } ?>
           </select>
-          <div class="invalid-feedback">Veuillez choisir un type.</div>
+          <div class="invalid-feedback">Veuillez sélectionner une catégorie.</div>
         </div>
 
-        <!-- Date -->
         <div class="col-md-4">
-          <label for="dateBesoin" class="form-label fw-semibold">Date <span class="text-danger">*</span></label>
-          <input type="date" class="form-control" id="dateBesoin" name="date_besoin" value="<?= date('Y-m-d') ?>" required>
+          <label for="article" class="form-label fw-semibold">Article <span class="text-danger">*</span></label>
+          <select class="form-select" id="article" name="id_article" required>
+            <?php foreach ($article as $a) { ?>
+              <option value="<?= $a['id'] ?>"><?= htmlspecialchars($a['nom']) ?></option>
+            <?php } ?>
+          </select>
+          <div class="invalid-feedback">Veuillez sélectionner un article.</div>
+        </div>
+
+        <div class="col-md-4">
+          <label for="quantite" class="form-label fw-semibold">Quantité <span class="text-danger">*</span></label>
+          <input type="number" step="0.001" min="0.001" class="form-control" id="quantite" name="quantite" required>
+          <div class="invalid-feedback">Quantité requise.</div>
+        </div>
+
+        <div class="col-md-4">
+          <label for="dateDemande" class="form-label fw-semibold">Date <span class="text-danger">*</span></label>
+          <input type="date" class="form-control" id="dateDemande" name="date_demande" value="<?= date('Y-m-d') ?>" required>
           <div class="invalid-feedback">Date requise.</div>
         </div>
-      </div>
-
-      <!-- Dynamic article lines -->
-      <div class="mt-4">
-        <label class="form-label fw-semibold">Détails du besoin</label>
-        <div id="lignesBesoins">
-          <!-- Ligne 1 -->
-          <div class="row g-2 mb-2 ligne-besoin align-items-end">
-            <div class="col-md-5">
-              <label class="form-label small text-muted">Article</label>
-              <select class="form-select form-select-sm" name="article[]">
-                <option value="">— Article —</option>
-                <option value="riz">Riz</option>
-                <option value="huile">Huile</option>
-                <option value="eau">Eau</option>
-                <option value="tole">Tôle</option>
-                <option value="clous">Clous</option>
-                <option value="ciment">Ciment</option>
-                <option value="bois">Bois</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Quantité</label>
-              <input type="number" class="form-control form-control-sm" name="quantite[]" min="1" placeholder="0">
-            </div>
-            <div class="col-md-3">
-              <label class="form-label small text-muted">Unité</label>
-              <select class="form-select form-select-sm" name="unite[]">
-                <option value="kg">kg</option>
-                <option value="L">Litres</option>
-                <option value="pièces">Pièces</option>
-                <option value="sacs">Sacs</option>
-                <option value="Ar">Ariary</option>
-              </select>
-            </div>
-            <div class="col-md-1">
-              <button type="button" class="btn btn-sm btn-outline-danger w-100 btn-remove-line" title="Supprimer">
-                <i class="bi bi-trash"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-        <button type="button" class="btn btn-sm btn-outline-success mt-2" id="btnAddLine">
-          <i class="bi bi-plus-lg"></i> Ajouter une ligne
-        </button>
-      </div>
-
-      <!-- Observations -->
-      <div class="mt-3">
-        <label for="observation" class="form-label fw-semibold">Observations</label>
-        <textarea class="form-control" id="observation" name="observation" rows="2" placeholder="Remarques éventuelles..."></textarea>
       </div>
 
       <div class="mt-4 d-flex gap-2">

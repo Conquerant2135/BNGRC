@@ -82,7 +82,7 @@ class BesoinController
         $res = $besoinService->validate($_POST);
         if ($res['ok']) {
             $besoinService->create($res['values'], (float)$res['montant_totale']);
-            Flight::redirect(BASE_URL . '/besoins?success=1');
+            Flight::redirect('/besoins?success=1');
             return;
         }
 
@@ -114,7 +114,7 @@ class BesoinController
         $res = $besoinService->validate($_POST);
         if ($res['ok']) {
             $besoinService->update((int)$id, $res['values'], (float)$res['montant_totale']);
-            Flight::redirect(BASE_URL . '/besoins?success=2');
+            Flight::redirect('/besoins?success=2');
             return;
         }
 
@@ -140,12 +140,12 @@ class BesoinController
     public static function delete($id): void
     {
         if (!ctype_digit((string)$id)) {
-            Flight::redirect(BASE_URL . '/besoins?error=1');
+            Flight::redirect('/besoins?error=1');
             return;
         }
 
         $repo = new BesoinRepository();
         $repo->delete((int)$id);
-        Flight::redirect(BASE_URL . '/besoins?success=3');
+        Flight::redirect('/besoins?success=3');
     }
 }

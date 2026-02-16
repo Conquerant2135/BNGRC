@@ -27,6 +27,6 @@ class BesoinController
     {
         $besoinService = new BesoinService();
         $besoinService->create($_POST);
-        \Flight::redirect('/besoin');
+        Flight::redirect('/besoin');
     }
 }

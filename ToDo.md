@@ -79,6 +79,10 @@ region :
 		+ [ ] date_demande
 		+ [ ] est_satisfait
 
+	etat_don :
+		+ [ ] id
+		+ [ ] nom
+
  	don :
 		+ [ ] id_don
 		+ [ ] donateur 
@@ -86,6 +90,7 @@ region :
 		+ [ ] id_ville
 		+ [ ] id_article
 		+ [ ] quantite
+		+ [ ] id_etat
 
 <!-- gestion du dispatch -->
 

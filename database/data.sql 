@@ -1,15 +1,15 @@
 -- Insertion de deux régions de Madagascar
-INSERT INTO bgnrc_region (nom) 
+INSERT INTO bngrc_region (nom) 
 VALUES 
     ('Analamanga'),
     ('Diana');
-INSERT INTO bgnrc_ville (id_region, nom_ville, nb_sinistres) 
+INSERT INTO bngrc_ville (id_region, nom_ville, nb_sinistres) 
 VALUES 
     (1, 'Antananarivo Renivohitra', 450),
     (1, 'Ambohidratrimo', 120);
 
--- 2. Insertion des villes pour la région Diana (id = 2)
-INSERT INTO bgnrc_ville (id_region, nom_ville, nb_sinistres) 
+
+INSERT INTO bngrc_ville (id_region, nom_ville, nb_sinistres) 
 VALUES 
     (2, 'Antsiranana', 85),
     (2, 'Ambilobe', 210);

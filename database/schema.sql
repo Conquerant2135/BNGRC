@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS bngrc;
-use bngrc;
+CREATE DATABASE IF NOT EXISTS bngrc CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE bngrc;
 
 CREATE TABLE bngrc_region (
     id INT PRIMARY KEY AUTO_INCREMENT,

@@ -1,6 +1,6 @@
 {
   "name": "bngrc/flight-app",
-  "description": "Test envoi de messages avec vu",
+  "description": "Site de gestion des dons de la BNGRC",
   "require": {
     "mikecao/flight": "^2.0"
   },
@@ -8,7 +8,8 @@
     "psr-4": {
       "controllers\\": "app/controllers/",
       "services\\": "app/services/",
-      "repositories\\": "app/repositories/"
+      "repositories\\": "app/repositories/",
+      "views\\" : "app/views"
     }
   },
   "config": {

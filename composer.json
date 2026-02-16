@@ -1,6 +1,6 @@
 {
-  "name": "bngrc/flight-app",
-  "description": "Test envoi de messages avec vu",
+  "name": "echange/flight-app",
+  "description": "Site d'echange d'objet",
   "require": {
     "mikecao/flight": "^2.0"
   },

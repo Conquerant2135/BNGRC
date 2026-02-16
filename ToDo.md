@@ -174,3 +174,5 @@ region :
 	+ [x] utilisation de bootstrap
 	+ [x] mise en page des view
 	+ [x] création de son propre template 
++ [ ] deploiement :
+  + [ ] http://172.16.7.108/ETU004367/BNGRC 

@@ -1,6 +1,6 @@
 {
-  "name": "bngrc/flight-app",
-  "description": "Site de gestion des dons de la BNGRC",
+  "name": "echange/flight-app",
+  "description": "Site d'echange d'objet",
   "require": {
     "mikecao/flight": "^2.0"
   },

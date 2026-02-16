@@ -62,7 +62,7 @@ region :
 		+ [ ] nom
 		+ [ ] id_unite
 		+ [ ] prix_unitaire
-
+ 
 	traboina : 
 		+ [ ] id
 		+ [ ] nom 
@@ -74,27 +74,32 @@ region :
 		+ [ ] id_article 
 		+ [ ] id_ville
  		+ [ ] quantite
- 		+ [ ] montant_totale 
+ 		+ [ ] montant_total 
 		+ [ ] id_traboina
-		+ [ ] date_demande 
+		+ [ ] date_demande
+		+ [ ] est_satisfait
 
  	don :
 		+ [ ] id_don
 		+ [ ] donateur 
 		+ [ ] date_don
-		+ [ ] id_cat
+		+ [ ] id_ville
 		+ [ ] id_article
 		+ [ ] quantite
 
+<!-- gestion du dispatch -->
+
 	attribution_don :
-		+ [ ] id 
-		+ [ ] id_traboina
-		+ [ ] id_don
+		+ [ ] id
+		+ [ ] id_don  
+		+ [ ] id_besoin
+		+ [ ] quantite
+		+ [ ] date_attribution 
 
 	stock : 
 		+ [ ] id
+		+ [ ] id_article
 		+ [ ] quantite
-		+ [ ] 
 
   		  Le sujet dit :
 

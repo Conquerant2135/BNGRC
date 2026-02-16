@@ -1,0 +1,7 @@
+-- Insertion de deux régions de Madagascar
+INSERT INTO region (nom) 
+VALUES 
+    ('Analamanga'),
+    ('Diana');
+
+

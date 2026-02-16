@@ -1,12 +1,82 @@
-CREATE DATABASE IF NOT EXISTS bngrc;
-\connect bngrc;
+CREATE DATABASE IF NOT EXISTS bngrc CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE bngrc;
 
-CREATE TABLE IF NOT EXISTS users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nom VARCHAR(100) NOT NULL,
-  prenom VARCHAR(100) NOT NULL,
-  email VARCHAR(150) NOT NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
-  telephone VARCHAR(20) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE bngrc_region (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE bngrc_ville (
+    id_ville INT AUTO_INCREMENT PRIMARY KEY,
+    id_region INT,
+    nom_ville VARCHAR(100) NOT NULL,
+    nb_sinistres INT DEFAULT 0,
+    CONSTRAINT chk_sinistres CHECK (nb_sinistres >= 0),
+    CONSTRAINT fk_region FOREIGN KEY (id_region) REFERENCES bngrc_region(id) 
+);
+
+CREATE TABLE bngrc_unite(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    libelle VARCHAR(25) NOT NULL
+);
+
+CREATE TABLE bngrc_categorie(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE bngrc_article(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    id_unite INT,
+    prix_unitaire DECIMAL(10, 3) NOT NULL,
+    id_cat INT ,
+    CONSTRAINT fk_unite FOREIGN KEY (id_unite) REFERENCES bngrc_unite(id),
+    CONSTRAINT fk_categorie_article FOREIGN KEY(id_cat) REFERENCES bngrc_categorie(id)
+); 
+
+CREATE TABLE bngrc_traboina(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nom VARCHAR(100) NOT NULL,
+    adresse VARCHAR(255) NOT NULL,
+    numero VARCHAR(20) NOT NULL
+
+);
+
+CREATE TABLE bngrc_besoin(
+    id_besoin INT AUTO_INCREMENT PRIMARY KEY,
+    id_article INT,
+    id_ville INT,
+    quantite DECIMAL(10, 3) NOT NULL,
+    montant_totale DECIMAL(10, 3) NOT NULL DEFAULT 0,
+    id_traboina INT,
+    date_demande DATE NOT NULL,
+    CONSTRAINT fk_article FOREIGN KEY (id_article) REFERENCES bngrc_article(id),
+    CONSTRAINT fk_ville FOREIGN KEY (id_ville) REFERENCES bngrc_ville(id_ville)
+);
+
+CREATE TABLE bngrc_don(
+    id_don INT AUTO_INCREMENT PRIMARY KEY,
+    donateur VARCHAR(100) NOT NULL,
+    date_don DATE NOT NULL,
+    id_cat INT,
+    id_article INT,
+    quantite DECIMAL(10, 3) NOT NULL,
+    CONSTRAINT fk_categorie FOREIGN KEY (id_cat) REFERENCES bngrc_categorie(id),
+    CONSTRAINT fk_article_don FOREIGN KEY (id_article) REFERENCES bngrc_article(id)
+);
+
+CREATE TABLE bngrc_attribution_don(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_traboina INT,
+    id_don INT,
+    CONSTRAINT fk_traboina FOREIGN KEY (id_traboina) REFERENCES bngrc_traboina(id),
+    CONSTRAINT fk_don FOREIGN KEY (id_don) REFERENCES bngrc_don(id)
+);
+
+CREATE TABLE bngrc_stock(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_article INT,
+    quantite DECIMAL(10,3) NOT NULL,
+    CONSTRAINT fk_stock_article FOREIGN KEY (id_article) REFERENCES bngrc_article(id)
 );

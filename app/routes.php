@@ -31,3 +31,8 @@ Flight::route('GET /villes', function () {
 Flight::route('GET /articles', function () {
     Flight::render('articles');
 });
+
+Flight::route('GET /' , function () {
+    Flight::render('home');
+
+});

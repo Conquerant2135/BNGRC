@@ -21,10 +21,9 @@ ob_start();
         <div class="col-md-4">
           <label for="ville" class="form-label fw-semibold">Ville <span class="text-danger">*</span></label>
           <select class="form-select" id="ville" name="id_ville" required>
-            <option value="">— Sélectionner une ville —</option>
-            <?php foreach ($ville as $v): ?>
+            <?php foreach ($ville as $v) {  ?>
               <option value="<?= $v['id_ville'] ?>"><?= htmlspecialchars($v['nom_ville']) ?></option>
-            <?php endforeach; ?>
+            <?php } ?>
           </select>
           <div class="invalid-feedback">Veuillez sélectionner une ville.</div>
         </div>
@@ -32,10 +31,9 @@ ob_start();
         <div class="col-md-4">
           <label for="categorie" class="form-label fw-semibold">Catégorie <span class="text-danger">*</span></label>
           <select class="form-select" id="categorie" name="id_cat" required>
-            <option value="">— Sélectionner une catégorie —</option>
-            <?php foreach ($cat as $c): ?>
+            <?php foreach ($cat as $c) {  ?>
               <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['nom']) ?></option>
-            <?php endforeach; ?>
+            <?php } ?>
           </select>
           <div class="invalid-feedback">Veuillez sélectionner une catégorie.</div>
         </div>
@@ -43,10 +41,9 @@ ob_start();
         <div class="col-md-4">
           <label for="article" class="form-label fw-semibold">Article <span class="text-danger">*</span></label>
           <select class="form-select" id="article" name="id_article" required>
-            <option value="">— Sélectionner un article —</option>
-            <?php foreach ($article as $a): ?>
+            <?php foreach ($article as $a) { ?>
               <option value="<?= $a['id'] ?>"><?= htmlspecialchars($a['nom']) ?></option>
-            <?php endforeach; ?>
+            <?php } ?>
           </select>
           <div class="invalid-feedback">Veuillez sélectionner un article.</div>
         </div>

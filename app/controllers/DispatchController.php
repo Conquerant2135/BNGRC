@@ -136,12 +136,10 @@ class DispatchController
             $params[':date_fin'] = $dateFin;
         }
 
-        if ($conditions) {
-            $sqlDons .= " WHERE " . implode(' AND ', $conditions);
-        }
-
         // Ne prendre que les dons ayant encore du stock à distribuer
-        $sqlDons .= " HAVING (d.quantite - COALESCE(att_sum.total_attribue, 0)) > 0";
+        $conditions[] = "(d.quantite - COALESCE(att_sum.total_attribue, 0)) > 0";
+
+        $sqlDons .= " WHERE " . implode(' AND ', $conditions);
         $sqlDons .= " ORDER BY d.date_don ASC, d.id_don ASC";
 
         $stmtDons = $db->prepare($sqlDons);
@@ -162,7 +160,7 @@ class DispatchController
                 GROUP BY id_besoin
             ) att_sum ON att_sum.id_besoin = b.id_besoin
             WHERE b.est_satisfait = 0
-            HAVING (b.quantite - COALESCE(att_sum.total_attribue, 0)) > 0
+              AND (b.quantite - COALESCE(att_sum.total_attribue, 0)) > 0
             ORDER BY b.date_demande ASC, b.id_besoin ASC
         ";
         $besoins = $db->query($sqlBesoins)->fetchAll(PDO::FETCH_ASSOC);

@@ -1,5 +1,7 @@
 <?php
-function e($v){ return htmlspecialchars($v ?? '', ENT_QUOTES, 'UTF-8'); }
+if (!function_exists('e')) {
+    function e($v){ return htmlspecialchars($v ?? '', ENT_QUOTES, 'UTF-8'); }
+}
 $baseUrl = BASE_URL;
 $currentUri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 function isActive($path) {

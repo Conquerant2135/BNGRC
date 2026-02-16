@@ -13,30 +13,13 @@ class ArticleController
      */
     public static function index()
     {
-        $db = Flight::db();
+        $articleRepo   = new ArticleRepository();
+        $categorieRepo = new CategorieRepository();
+        $uniteRepo     = new UniteRepository();
 
-        // Articles avec catégorie et unité
-        $articles = $db->query("
-            SELECT a.id, a.nom, a.prix_unitaire,
-                   c.id AS id_cat, c.nom AS categorie,
-                   u.id AS id_unite, u.libelle AS unite
-            FROM bngrc_article a
-            LEFT JOIN bngrc_categorie c ON c.id = a.id_cat
-            LEFT JOIN bngrc_unite u ON u.id = a.id_unite
-            ORDER BY c.nom, a.nom
-        ")->fetchAll(PDO::FETCH_ASSOC);
-
-        // Catégories avec compteur
-        $categories = $db->query("
-            SELECT c.id, c.nom, COUNT(a.id) AS nb_articles
-            FROM bngrc_categorie c
-            LEFT JOIN bngrc_article a ON a.id_cat = c.id
-            GROUP BY c.id, c.nom
-            ORDER BY c.nom
-        ")->fetchAll(PDO::FETCH_ASSOC);
-
-        // Unités pour le formulaire
-        $unites = $db->query("SELECT id, libelle FROM bngrc_unite ORDER BY libelle")->fetchAll(PDO::FETCH_ASSOC);
+        $articles   = $articleRepo->allWithDetails();
+        $categories = $categorieRepo->allWithArticleCount();
+        $unites     = $uniteRepo->all();
 
         $success = $_GET['success'] ?? null;
         $error   = $_GET['error']   ?? null;
@@ -55,8 +38,6 @@ class ArticleController
      */
     public static function ajouter()
     {
-        $db = Flight::db();
-
         $nom       = trim($_POST['nom_article'] ?? '');
         $idCat     = (int) ($_POST['categorie'] ?? 0);
         $idUnite   = (int) ($_POST['unite_defaut'] ?? 0);
@@ -67,17 +48,8 @@ class ArticleController
         }
 
         try {
-            $stmt = $db->prepare("
-                INSERT INTO bngrc_article (nom, id_cat, id_unite, prix_unitaire)
-                VALUES (:nom, :id_cat, :id_unite, :prix)
-            ");
-            $stmt->execute([
-                ':nom'     => $nom,
-                ':id_cat'  => $idCat,
-                ':id_unite'=> $idUnite,
-                ':prix'    => $prix,
-            ]);
-
+            $articleRepo = new ArticleRepository();
+            $articleRepo->insert($nom, $idCat, $idUnite, $prix);
             self::redir('/articles?success=' . urlencode('Article ajouté avec succès.'));
         } catch (Exception $e) {
             self::redir('/articles?error=' . urlencode($e->getMessage()));
@@ -89,7 +61,6 @@ class ArticleController
      */
     public static function supprimer()
     {
-        $db = Flight::db();
         $id = (int) ($_POST['id'] ?? 0);
 
         if ($id === 0) {
@@ -97,8 +68,8 @@ class ArticleController
         }
 
         try {
-            $stmt = $db->prepare("DELETE FROM bngrc_article WHERE id = :id");
-            $stmt->execute([':id' => $id]);
+            $articleRepo = new ArticleRepository();
+            $articleRepo->delete($id);
             self::redir('/articles?success=' . urlencode('Article supprimé.'));
         } catch (Exception $e) {
             self::redir('/articles?error=' . urlencode('Impossible de supprimer : cet article est utilisé dans des besoins ou des dons.'));
@@ -110,8 +81,6 @@ class ArticleController
      */
     public static function modifier()
     {
-        $db = Flight::db();
-
         $id        = (int) ($_POST['id'] ?? 0);
         $nom       = trim($_POST['nom_article'] ?? '');
         $idCat     = (int) ($_POST['categorie'] ?? 0);
@@ -123,19 +92,8 @@ class ArticleController
         }
 
         try {
-            $stmt = $db->prepare("
-                UPDATE bngrc_article
-                SET nom = :nom, id_cat = :id_cat, id_unite = :id_unite, prix_unitaire = :prix
-                WHERE id = :id
-            ");
-            $stmt->execute([
-                ':nom'     => $nom,
-                ':id_cat'  => $idCat,
-                ':id_unite'=> $idUnite,
-                ':prix'    => $prix,
-                ':id'      => $id,
-            ]);
-
+            $articleRepo = new ArticleRepository();
+            $articleRepo->update($id, $nom, $idCat, $idUnite, $prix);
             self::redir('/articles?success=' . urlencode('Article modifié avec succès.'));
         } catch (Exception $e) {
             self::redir('/articles?error=' . urlencode($e->getMessage()));

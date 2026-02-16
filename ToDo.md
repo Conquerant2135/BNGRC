@@ -100,14 +100,8 @@ region :
 			+ [ ] Quantité restante
 
 			+ [ ] Total dons attribués
+
 +  [ ] Base de donnee:
-   +  [ ] region 
-         +  [ ] id_region
-         +  [ ] nom_region
-   +  [ ]  ville 
-         +  [ ] id_ ville 
-         +  [ ] nom_ville 
-         +  [ ] id_region 
-   		 +  [ ] nombres de sinistres  
- 		 +  [ ] besoins    
- 		 +  [ ] dons
+   +  [X] region 
+         +  [X] id_region
+         +  [X] nom_region

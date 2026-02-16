@@ -18,9 +18,10 @@ Flight::route('GET /dons', function () {
 });
 
 // Simulation du dispatch
-Flight::route('GET /dispatch', function () {
-    Flight::render('dispatch');
-});
+Flight::route('GET /dispatch', [DispatchController::class, 'index']);
+
+// Valider le dispatch
+Flight::route('POST /dispatch/valider', [DispatchController::class, 'valider']);
 
 // Gestion des villes
 Flight::route('GET /villes', function () {

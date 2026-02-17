@@ -1,21 +1,21 @@
 
-+ [ ] Simulation discpatcher :
++ [X] Simulation discpatcher :
     + [X] 3 modes :
    
       + [X] mode date (FIFO)  : simule les besoins les plus anciens orde de date et de saisie 
-        + [ ] exemple : 
-          + [ ] besoin 1 : date 01/01/2024  1 er 
-          + [ ] besoin 2 : date 02/01/2024  2 eme 
-          + [ ] besoin 3 : date 03/01/2024  3eme 
+        + [X] exemple : 
+          + [X] besoin 1 : date 01/01/2024  1 er 
+          + [X] besoin 2 : date 02/01/2024  2 eme 
+          + [X] besoin 3 : date 03/01/2024  3eme 
       + [X] mode stock : simule les besoins de plus  petites quantités (quantité croissante petites qunatites d abord, date inutile)
-        + [ ] besoin 1 : date 01/01/2024   Quantite  5 --> position 2 eme
-          + [ ] besoin 2 : date 02/01/2024  Quanntite 1 --> position 1 er  
-          + [ ] besoin 3 : date 03/01/2024  Qunatite 6 --> position 3 eme  
+        + [X] besoin 1 : date 01/01/2024   Quantite  5 --> position 2 eme
+          + [X] besoin 2 : date 02/01/2024  Quanntite 1 --> position 1 er  
+          + [X] besoin 3 : date 03/01/2024  Qunatite 6 --> position 3 eme  
       + [X] mode proportionnelle : simule les besoins en fonction de la quantité demandée :6   répartis au prorata (avec arrondi inférieur)
-        + [ ]exemple :reparti quantite 6 
-          + [ ] besoin 1 : 1 --> 1/6 = arrondissement inferieur 
-          + [ ] besoin 2 : 3 --> 3/6 = arrondissement inferieur 
-          + [ ] besoin 3 : 6  --> 6/6 = arraondissement inferieur  
+        + [X] exemple :reparti quantite 6 
+          + [X] besoin 1 : 1 --> 1/6 = arrondissement inferieur 
+          + [X] besoin 2 : 3 --> 3/6 = arrondissement inferieur 
+          + [X] besoin 3 : 6  --> 6/6 = arraondissement inferieur  
 + [X] test.sql   (deja fait )
 + [X] Dons disponibles: calcule le restant d’un don (quantité don - attribuée).
 + [X] Besoins non satisfaits: filtre les besoins encore ouverts.
@@ -24,25 +24,26 @@
 + [X] Marquer don distribué: met l’état du don à “Distribué” si totalement utilisé.
 + [X] Tableau de bord: agrège besoins vs dons par ville et catégorie.
 
-+[ ]schema.sql (deja fait)
++[X]schema.sql (deja fait)
 + [X] bngrc_don = source
 + [X] bngrc_besoin = demandes
 + [X] bngrc_attribution_don = historique dispatch
 + [X] bngrc_stock = utile pour mode stock si tu veux simuler sur stock total
 + [X] bngrc_achat_produit, bngrc_montant_taxe = achat produit
 
-+ [X]DispacthController 
++ [X] DispacthController 
   + [X] switch($mode) : 
   + [X] fifo → besoins triés par date_demande, id_besoin
   + [X] stock → besoins triés par quantite ASC
   + [X] proportionnelle → regroupe par article et répartis au prorata dans un tour
-    + [ ] Pour un don (article X, quantité Q) :
-    + [ ] prends tous les besoins non satisfaits de l’article X
-            + [ ] totalBesoin = somme(quantites restantes)
+    + [X] Pour un don (article X, quantité Q) :
+    + [X] prends tous les besoins non satisfaits de l'article X
+            + [X] totalBesoin = somme(quantites restantes)
             + [X] pour chaque besoin: qteAttrib = floor(Q * besoinRestant / totalBesoin)
-            + [X] si reste > 0, distribue le reste aux besoins par ordre FIFO
+            + [X] calcul décimale et arrondi >= 0.5
+            + [X] si reste > 0 après arrondi, distribue le reste en FIFO
   
-+ [ ] Requete SQL :
++ [X] Requete SQL :
 -- Dons disponibles (FIFO)
 SELECT d.id_don, d.id_article, d.quantite, d.date_don,
        COALESCE(att_sum.total_attribue, 0) AS deja_attribue
@@ -69,7 +70,7 @@ WHERE b.est_satisfait = 0
 ORDER BY b.date_demande ASC, b.id_besoin ASC;
 
 
-+ [ ] Mode stock (petites quantites d’abord)
++ [X] Mode stock (petites quantites d'abord)
 
 Même logique, mais besoins triés par quantite ASC:
 -- Besoins non satisfaits (stock)
@@ -85,7 +86,7 @@ WHERE b.est_satisfait = 0
   AND (b.quantite - COALESCE(att_sum.total_attribue, 0)) > 0
 ORDER BY b.quantite ASC,id_besoin ASC;
 
-+ [ ] Mode proportionnelle (repartition au prorata):
++ [X] Mode proportionnelle (repartition au prorata):
 
 -- Besoins restants par article (pour prorata)
 SELECT b.id_besoin, b.id_article,

@@ -6,11 +6,11 @@ INSERT INTO bngrc_region (id, nom) VALUES
 
 -- Villes
 INSERT INTO bngrc_ville (id_ville, id_region, nom_ville, nb_sinistres) VALUES
-  (1, 1, 'Toamasina', 0),
-  (2, 1, 'Mananjary', 0),
-  (3, 1, 'Farafangana', 0),
-  (4, 1, 'Nosy Be', 0),
-  (5, 1, 'Morondava', 0);
+  (1, 1, 'Toamasina', 1),
+  (2, 1, 'Mananjary', 1),
+  (3, 1, 'Farafangana', 1),
+  (4, 1, 'Nosy Be', 1),
+  (5, 1, 'Morondava', 1);
 
 -- Unites
 INSERT INTO bngrc_unite (id, libelle) VALUES

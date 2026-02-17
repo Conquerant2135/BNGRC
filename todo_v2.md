@@ -28,5 +28,9 @@ on calcule le prix total de la qte et on envoie une erreure si on a pas assez d'
 
 achat_produit ++ on calcule le taux et tout avce la taxe 
 
-+ [ ] page achat produit
-    + [ ] formulaire 
++ [x] page achat produit
+    + [x] formulaire : choix produit - qte - categorie
++ [x] verification 
+    + [x] voir dans si on a assez d'argent - argent_don  - (argent_distr + taxes + achat )
+        + [x] vue argent total - argent donnee - total taxe - achat 
+    + [x] voir si un achat similaire est deja dans la base

@@ -55,6 +55,7 @@ CREATE TABLE bngrc_besoin (
   id_traboina INT,
   date_demande DATE NOT NULL,
   est_satisfait TINYINT(1) NOT NULL DEFAULT 0,
+  ordre INT NOT NULL DEFAULT 0,
   CONSTRAINT fk_article FOREIGN KEY (id_article) REFERENCES bngrc_article (id),
   CONSTRAINT fk_ville FOREIGN KEY (id_ville) REFERENCES bngrc_ville (id_ville),
   CONSTRAINT fk_traboina FOREIGN KEY (id_traboina) REFERENCES bngrc_traboina (id)

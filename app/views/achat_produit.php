@@ -1,4 +1,5 @@
 <?php
+
 $pageTitle = "Achat de produits";
 $breadcrumb = ["Achat de produits" => null];
 $baseUrl = BASE_URL;
@@ -18,11 +19,13 @@ $errors = $errors ?? [
 
 $taxe = $taxe ?? 0;
 $argentDisponible = $argentDisponible ?? 0;
-$esc = function($v) { return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8'); };
-$fmtMoney = function($v) {
+$esc = function ($v) {
+  return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
+};
+$fmtMoney = function ($v) {
   return number_format((float)$v, 2, '.', ' ');
 };
-$fmtQty = function($v) {
+$fmtQty = function ($v) {
   $n = number_format((float)$v, 3, '.', ' ');
   return rtrim(rtrim($n, '0'), '.');
 };

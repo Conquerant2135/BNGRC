@@ -78,6 +78,7 @@ CREATE TABLE bngrc_don (
   CONSTRAINT fk_article_don FOREIGN KEY (id_article) REFERENCES bngrc_article (id),
   CONSTRAINT fk_etat_don FOREIGN KEY (id_etat) REFERENCES bngrc_etat_don (id)
 );
+
 CREATE TABLE bngrc_attribution_don (
   id INT AUTO_INCREMENT PRIMARY KEY,
   id_don INT NOT NULL,

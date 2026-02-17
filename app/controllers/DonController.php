@@ -195,6 +195,7 @@ class DonController {
     ]);
   }
 
+
   public static function validationAchat(){
     $pdo = Flight::db();
     $repo = new DonRepository($pdo);
@@ -207,7 +208,10 @@ class DonController {
       'date_achat' => $req->data->date_achat
     ];
 
+    var_dump($input);
+
     $res = $svc->achatProduit($input);
+    
     if ($res['ok']) {
       try {
         $repo->achatProduit($res['values']);
@@ -219,7 +223,13 @@ class DonController {
       }
     }
 
-    $errCode = $res['errors']['montant'] !== '' ? '2' : '1';
+    $errCode = '1';
+    if ($res['errors']['montant'] !== '') $errCode = '2';
+    if (!empty($res['errors']['achat'])) $errCode = '3';
+
+    $flashError = 'Veuillez corriger le formulaire.';
+    if ($errCode === '2') $flashError = "Montant insuffisant en dons d'argent (TTC).";
+    if ($errCode === '3') $flashError = "Achat déjà présent.";
 
     Flight::render('achat_produit', [
       'articles' => $repo->listArticles(),
@@ -234,7 +244,8 @@ class DonController {
       ],
       'errors' => $res['errors'],
       'flashSuccess' => '',
-      'flashError' => ($errCode === '2') ? "Montant insuffisant en dons d'argent (TTC)." : 'Veuillez corriger le formulaire.'
+      'flashError' => $flashError
     ]);
   }
+
 }

@@ -1,22 +1,29 @@
 <?php
-class DonRepository {
+class DonRepository
+{
   private $pdo;
-  public function __construct(PDO $pdo) { $this->pdo = $pdo; }
+  public function __construct(PDO $pdo)
+  {
+    $this->pdo = $pdo;
+  }
 
-  public function listAll() {
+  public function listAll()
+  {
     $sql = "
       SELECT * FROM v_liste_dons
     ";
     return $this->pdo->query($sql)->fetchAll();
   }
 
-  public function findById($id) {
+  public function findById($id)
+  {
     $st = $this->pdo->prepare("SELECT * FROM bngrc_don WHERE id_don = ? LIMIT 1");
     $st->execute([(int)$id]);
     return $st->fetch();
   }
 
-  public function create(array $values) {
+  public function create(array $values)
+  {
     $st = $this->pdo->prepare("
       INSERT INTO bngrc_don(donateur, date_don, id_cat, id_article, quantite, id_etat)
       VALUES(?,?,?,?,?,?)
@@ -32,7 +39,8 @@ class DonRepository {
     return $this->pdo->lastInsertId();
   }
 
-  public function update($id, array $values) {
+  public function update($id, array $values)
+  {
     $st = $this->pdo->prepare("
       UPDATE bngrc_don
       SET donateur = ?, date_don = ?, id_cat = ?, id_article = ?, quantite = ?, id_etat = ?
@@ -50,43 +58,51 @@ class DonRepository {
     return $st->rowCount();
   }
 
-  public function delete($id) {
+  public function delete($id)
+  {
     $st = $this->pdo->prepare("DELETE FROM bngrc_don WHERE id_don = ?");
     $st->execute([(int)$id]);
     return $st->rowCount();
   }
 
-  public function listCategories() {
+  public function listCategories()
+  {
     return $this->pdo->query("SELECT id, nom FROM bngrc_categorie ORDER BY nom")->fetchAll();
   }
 
-  public function listArticles() {
+  public function listArticles()
+  {
     return $this->pdo->query("SELECT id, nom, id_cat FROM bngrc_article ORDER BY nom")->fetchAll();
   }
 
-  public function listEtats() {
+  public function listEtats()
+  {
     return $this->pdo->query("SELECT id, nom FROM bngrc_etat_don ORDER BY id")->fetchAll();
   }
 
-  public function getTaxeValeur() {
+  public function getTaxeValeur()
+  {
     $stmt = $this->pdo->query("SELECT valeur FROM bngrc_montant_taxe ORDER BY id DESC LIMIT 1");
     $val = $stmt->fetchColumn();
     return $val !== false ? (float)$val : 0.0;
   }
 
-  public function getArticleById($id) {
+  public function getArticleById($id)
+  {
     $st = $this->pdo->prepare("SELECT id, nom, prix_unitaire, id_cat FROM bngrc_article WHERE id = ? LIMIT 1");
     $st->execute([(int)$id]);
     return $st->fetch();
   }
 
-  public function getCategorieArgentId() {
+  public function getCategorieArgentId()
+  {
     $st = $this->pdo->query("SELECT id FROM bngrc_categorie WHERE LOWER(nom) LIKE '%argent%' LIMIT 1");
     $id = $st->fetchColumn();
     return $id !== false ? (int)$id : null;
   }
 
-  public function getTotalArgent() {
+  public function getTotalArgent()
+  {
     $idCat = $this->getCategorieArgentId();
     if (!$idCat) return 0.0;
     $st = $this->pdo->prepare("SELECT COALESCE(SUM(quantite), 0) FROM bngrc_don WHERE id_cat = ?");
@@ -94,16 +110,19 @@ class DonRepository {
     return (float)$st->fetchColumn();
   }
 
-  public function getTotalAchats() {
+  public function getTotalAchats()
+  {
     $st = $this->pdo->query("SELECT COALESCE(SUM(montant_total), 0) FROM bngrc_achat_produit");
     return (float)$st->fetchColumn();
   }
 
-  public function getArgentDisponible() {
+  public function getArgentDisponible()
+  {
     return $this->getTotalArgent() - $this->getTotalAchats();
   }
 
-  public function listAchats() {
+  public function listAchats()
+  {
     $sql = "
       SELECT ap.id, ap.id_article, ap.quantite, ap.valeur_taux, ap.montant_total, ap.date_achat,
              a.nom AS article, a.prix_unitaire,
@@ -116,7 +135,8 @@ class DonRepository {
     return $this->pdo->query($sql)->fetchAll();
   }
 
-  public function listBesoinsRestants() {
+  public function listBesoinsRestants()
+  {
     $sql = "
       SELECT b.id_besoin, b.id_article, b.id_ville, b.quantite, b.date_demande,
              v.nom_ville, a.nom AS article_nom,
@@ -137,13 +157,15 @@ class DonRepository {
     return $this->pdo->query($sql)->fetchAll();
   }
 
-  public function getDefaultEtatId() {
+  public function getDefaultEtatId()
+  {
     $st = $this->pdo->query("SELECT id FROM bngrc_etat_don ORDER BY id ASC LIMIT 1");
     $id = $st->fetchColumn();
     return $id !== false ? (int)$id : null;
   }
 
-  public function achatProduit(array $data) {
+  public function achatProduit(array $data)
+  {
     $this->pdo->beginTransaction();
     try {
       $stmtAchat = $this->pdo->prepare("
@@ -185,7 +207,7 @@ class DonRepository {
    */
   public function countAll(): int
   {
-      return (int) $this->pdo->query("SELECT COUNT(*) FROM bngrc_don")->fetchColumn();
+    return (int) $this->pdo->query("SELECT COUNT(*) FROM bngrc_don")->fetchColumn();
   }
 
   /**
@@ -193,7 +215,7 @@ class DonRepository {
    */
   public function derniers(int $limit = 10): array
   {
-      $sql = "SELECT d.date_don, d.donateur, d.quantite,
+    $sql = "SELECT d.date_don, d.donateur, d.quantite,
                      a.nom AS article_nom, u.libelle AS unite,
                      c.nom AS categorie,
                      e.nom AS etat
@@ -204,7 +226,7 @@ class DonRepository {
               LEFT JOIN bngrc_etat_don e ON e.id = d.id_etat
               ORDER BY d.date_don DESC, d.id_don DESC
               LIMIT " . (int) $limit;
-      return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -212,7 +234,7 @@ class DonRepository {
    */
   public function disponibles(?string $dateDebut, ?string $dateFin): array
   {
-      $sql = "SELECT d.id_don, d.donateur, d.date_don, d.id_article, d.quantite,
+    $sql = "SELECT d.id_don, d.donateur, d.date_don, d.id_article, d.quantite,
                      a.nom AS article_nom, u.libelle AS unite,
                      COALESCE(att_sum.total_attribue, 0) AS deja_attribue
               FROM bngrc_don d
@@ -224,25 +246,25 @@ class DonRepository {
                   GROUP BY id_don
               ) att_sum ON att_sum.id_don = d.id_don";
 
-      $conditions = [];
-      $params     = [];
+    $conditions = [];
+    $params     = [];
 
-      if ($dateDebut) {
-          $conditions[]          = "d.date_don >= :date_debut";
-          $params[':date_debut'] = $dateDebut;
-      }
-      if ($dateFin) {
-          $conditions[]        = "d.date_don <= :date_fin";
-          $params[':date_fin'] = $dateFin;
-      }
-      $conditions[] = "(d.quantite - COALESCE(att_sum.total_attribue, 0)) > 0";
+    if ($dateDebut) {
+      $conditions[]          = "d.date_don >= :date_debut";
+      $params[':date_debut'] = $dateDebut;
+    }
+    if ($dateFin) {
+      $conditions[]        = "d.date_don <= :date_fin";
+      $params[':date_fin'] = $dateFin;
+    }
+    $conditions[] = "(d.quantite - COALESCE(att_sum.total_attribue, 0)) > 0";
 
-      $sql .= " WHERE " . implode(' AND ', $conditions);
-      $sql .= " ORDER BY d.date_don ASC, d.id_don ASC";
+    $sql .= " WHERE " . implode(' AND ', $conditions);
+    $sql .= " ORDER BY d.date_don ASC, d.id_don ASC";
 
-      $stmt = $this->pdo->prepare($sql);
-      $stmt->execute($params);
-      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -250,10 +272,10 @@ class DonRepository {
    */
   public function findEtatDistribue(): ?int
   {
-      $id = $this->pdo->query(
-          "SELECT id FROM bngrc_etat_don WHERE nom LIKE '%distribu%' OR nom LIKE '%attribu%' LIMIT 1"
-      )->fetchColumn();
-      return $id !== false ? (int) $id : null;
+    $id = $this->pdo->query(
+      "SELECT id FROM bngrc_etat_don WHERE nom LIKE '%distribu%' OR nom LIKE '%attribu%' LIMIT 1"
+    )->fetchColumn();
+    return $id !== false ? (int) $id : null;
   }
 
   /**
@@ -261,7 +283,7 @@ class DonRepository {
    */
   public function marquerDistribues(int $idEtat): void
   {
-      $this->pdo->exec("
+    $this->pdo->exec("
           UPDATE bngrc_don d
           SET id_etat = {$idEtat}
           WHERE (
@@ -271,4 +293,56 @@ class DonRepository {
           ) >= d.quantite
       ");
   }
+
+  public function getDonSimilaire($quantite, $idArticle)
+  {
+    $sql = "SELECT COUNT(*) 
+              FROM bngrc_achat_produit 
+              WHERE id_article = ? AND quantite = ?";
+    $st = $this->pdo->prepare($sql);
+    $st->execute([(int)$idArticle, (float)$quantite]);
+    return ((int)$st->fetchColumn()) > 0;
+  }
+
+  public function donNonConsomeSimilaire($idArticle): float
+  {
+    $sql = "
+        SELECT COALESCE(SUM(d.quantite - COALESCE(a.total_attribue, 0)), 0) AS restant
+        FROM bngrc_don d
+        LEFT JOIN (
+            SELECT id_don, SUM(quantite_attribuee) AS total_attribue
+            FROM bngrc_attribution_don
+            GROUP BY id_don
+        ) a ON a.id_don = d.id_don
+        WHERE d.id_article = ?
+      ";
+    $st = $this->pdo->prepare($sql);
+    $st->execute([(int)$idArticle]);
+    return (float)$st->fetchColumn();
+  }
+  public function getPrixUnitaire(int $idArticle): ?float
+  {
+    $st = $this->pdo->prepare("SELECT prix_unitaire FROM bngrc_article WHERE id = ?");
+    $st->execute([$idArticle]);
+    $row = $st->fetch(PDO::FETCH_ASSOC);
+    return $row ? (float)$row['prix_unitaire'] : null;
+  }
+
+  public function getRestantArticleDansDons(int $idArticle): float
+  {
+    $sql = "
+      SELECT COALESCE(SUM(d.quantite - COALESCE(a.total_attribue, 0)), 0) AS restant
+      FROM bngrc_don d
+      LEFT JOIN (
+          SELECT id_don, SUM(quantite_attribuee) AS total_attribue
+          FROM bngrc_attribution_don
+          GROUP BY id_don
+      ) a ON a.id_don = d.id_don
+      WHERE d.id_article = ?
+    ";
+    $st = $this->pdo->prepare($sql);
+    $st->execute([$idArticle]);
+    return (float)$st->fetchColumn();
+  }
+
 }

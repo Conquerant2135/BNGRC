@@ -50,7 +50,7 @@ CREATE TABLE bngrc_besoin (
   id_besoin INT AUTO_INCREMENT PRIMARY KEY,
   id_article INT,
   id_ville INT,
-  quantite DECIMAL(10, 3) NOT NULL,
+  quantite DECIMAL(15, 3) NOT NULL,
   montant_totale DECIMAL(10, 3) NOT NULL DEFAULT 0,
   id_traboina INT,
   date_demande DATE NOT NULL,
@@ -72,7 +72,7 @@ CREATE TABLE bngrc_don (
   date_don DATE NOT NULL,
   id_cat INT,
   id_article INT,
-  quantite DECIMAL(10, 3) NOT NULL,
+  quantite DECIMAL(15, 3) NOT NULL,
   id_etat INT,
   CONSTRAINT fk_categorie FOREIGN KEY (id_cat) REFERENCES bngrc_categorie (id),
   CONSTRAINT fk_article_don FOREIGN KEY (id_article) REFERENCES bngrc_article (id),
@@ -83,7 +83,7 @@ CREATE TABLE bngrc_attribution_don (
   id INT AUTO_INCREMENT PRIMARY KEY,
   id_don INT NOT NULL,
   id_besoin INT NOT NULL,
-  quantite_attribuee DECIMAL(10, 3) NOT NULL,
+  quantite_attribuee DECIMAL(15, 3) NOT NULL,
   date_attribution DATE NOT NULL,
   CONSTRAINT fk_attrib_don FOREIGN KEY (id_don) REFERENCES bngrc_don (id_don),
   CONSTRAINT fk_attrib_besoin FOREIGN KEY (id_besoin) REFERENCES bngrc_besoin (id_besoin)
@@ -92,19 +92,19 @@ CREATE TABLE bngrc_attribution_don (
 CREATE TABLE bngrc_stock (
   id INT AUTO_INCREMENT PRIMARY KEY,
   id_article INT,
-  quantite DECIMAL(10, 3) NOT NULL,
+  quantite DECIMAL(15, 3) NOT NULL,
   CONSTRAINT fk_stock_article FOREIGN KEY (id_article) REFERENCES bngrc_article (id)
 );
 
 CREATE TABLE bngrc_montant_taxe (
   id INT AUTO_INCREMENT PRIMARY KEY , 
-  valeur DECIMAL(10,3)
+  valeur DECIMAL(15,3)
 );
 
 CREATE TABLE bngrc_achat_produit (
   id INT AUTO_INCREMENT PRIMARY KEY,
   id_article INT,
-  quantite DECIMAL(10,3) NOT NULL,
+  quantite DECIMAL(15,3) NOT NULL,
   valeur_taux DECIMAL(5,2) NOT NULL DEFAULT 0,
   montant_total DECIMAL(12,3) NOT NULL,
   date_achat DATE NOT NULL,

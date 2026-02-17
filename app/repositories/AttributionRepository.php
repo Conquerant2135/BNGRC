@@ -72,4 +72,25 @@ class AttributionRepository
     {
         $this->pdo->rollBack();
     }
+
+    /**
+     * Réinitialiser toutes les données de dispatch :
+     * - Vider attribution_don, achat_produit, stock
+     * - Remettre besoins à est_satisfait = 0
+     * - Remettre dons à id_etat = 1 (En attente)
+     */
+    public function resetAll(): void
+    {
+        $this->pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+        $this->pdo->exec("TRUNCATE TABLE bngrc_attribution_don");
+        $this->pdo->exec("TRUNCATE TABLE bngrc_achat_produit");
+        $this->pdo->exec("TRUNCATE TABLE bngrc_stock");
+        $this->pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
+
+        // Remettre tous les besoins à insatisfait
+        $this->pdo->exec("UPDATE bngrc_besoin SET est_satisfait = 0");
+
+        // Remettre tous les dons en attente (id_etat = 1)
+        $this->pdo->exec("UPDATE bngrc_don SET id_etat = 1");
+    }
 }

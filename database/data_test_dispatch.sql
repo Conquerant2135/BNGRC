@@ -103,4 +103,3 @@ VALUES
     (2, 30.000);
 
 INSERT INTO bngrc_montant_taxe (valeur) VALUES ( 10 );
-

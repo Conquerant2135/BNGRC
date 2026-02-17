@@ -88,6 +88,20 @@ class DispatchController
     }
 
     /**
+     * POST /dispatch/reset — Réinitialiser les données de dispatch
+     */
+    public static function reset()
+    {
+        try {
+            $attributionRepo = new AttributionRepository();
+            $attributionRepo->resetAll();
+            self::redir('/dispatch?success=' . urlencode('Réinitialisation effectuée avec succès.'));
+        } catch (Exception $e) {
+            self::redir('/dispatch?error=' . urlencode($e->getMessage()));
+        }
+    }
+
+    /**
      * Simuler le dispatch des dons par ordre chronologique (FIFO ou proportionnel)
      */
     private static function simulerDispatch(DonRepository $donRepo, BesoinRepository $besoinRepo, ?string $dateDebut, ?string $dateFin, string $mode): array

@@ -83,6 +83,12 @@ function isActive($path) {
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-link sidebar-link <?= isActive('/dispatch/recap') ?>" href="<?= $baseUrl ?>/dispatch/recap">
+            <i class="bi bi-clipboard-data"></i>
+            <span>Récap dispatch</span>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link sidebar-link <?= isActive('/achats') ?>" href="<?= $baseUrl ?>/achats">
             <i class="bi bi-cart-check"></i>
             <span>Achat de produits</span>

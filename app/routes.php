@@ -39,6 +39,9 @@ Flight::route('GET /dispatch', [DispatchController::class, 'index']);
 // Valider le dispatch
 Flight::route('POST /dispatch/valider', [DispatchController::class, 'valider']);
 
+// Réinitialiser le dispatch
+Flight::route('POST /dispatch/reset', [DispatchController::class, 'reset']);
+
 // Gestion des villes
 Flight::route('GET /villes', ['VilleController', 'index']);
 Flight::route('POST /villes', ['VilleController', 'store']);

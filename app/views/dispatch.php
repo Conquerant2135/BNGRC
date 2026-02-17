@@ -26,7 +26,7 @@ ob_start();
 
 <?php if ($success): ?>
   <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <i class="bi bi-check-circle-fill me-2"></i><strong>Dispatch validé avec succès !</strong> Les attributions ont été enregistrées en base de données.
+    <i class="bi bi-check-circle-fill me-2"></i><strong><?= $success === '1' ? 'Dispatch validé avec succès ! Les attributions ont été enregistrées en base de données.' : e($success) ?></strong>
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   </div>
 <?php endif; ?>
@@ -40,6 +40,11 @@ ob_start();
 
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h4 class="mb-0"><i class="bi bi-truck me-2 text-warning"></i>Simulation du dispatch des dons</h4>
+  <form method="post" action="<?= $baseUrl ?>/dispatch/reset" onsubmit="return confirm('Réinitialiser toutes les attributions, stocks et achats ? Les besoins et dons seront remis à leur état initial.');">
+    <button type="submit" class="btn btn-outline-danger">
+      <i class="bi bi-arrow-counterclockwise me-1"></i>Réinitialiser
+    </button>
+  </form>
 </div>
 
 <!-- ===== INFO ===== -->

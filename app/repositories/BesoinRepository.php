@@ -130,8 +130,13 @@ class BesoinRepository
     /**
      * Besoins non satisfaits avec quantités déjà attribuées (pour dispatch simulation)
      */
-    public function nonSatisfaits(): array
+    public function nonSatisfaits(string $mode = 'fifo'): array
     {
+        $orderBy = "b.date_demande ASC, b.id_besoin ASC";
+        if ($mode === 'stock') {
+            $orderBy = "b.quantite ASC, b.id_besoin";
+        }
+
         $sql = "SELECT b.id_besoin, b.id_article, b.id_ville, b.quantite, b.date_demande,
                        v.nom_ville, a.nom AS article_nom,
                        COALESCE(att_sum.total_attribue, 0) AS deja_attribue
@@ -145,7 +150,7 @@ class BesoinRepository
                 ) att_sum ON att_sum.id_besoin = b.id_besoin
                 WHERE b.est_satisfait = 0
                   AND (b.quantite - COALESCE(att_sum.total_attribue, 0)) > 0
-                ORDER BY b.date_demande ASC, b.id_besoin ASC";
+                ORDER BY {$orderBy}";
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 

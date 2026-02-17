@@ -48,8 +48,9 @@ ob_start();
     <i class="bi bi-info-circle-fill fs-4 me-3"></i>
     <div>
       <strong>Comment fonctionne le dispatch ?</strong><br>
-      Les dons sont distribués aux villes par <strong>ordre de date de saisie</strong> (les dons les plus anciens sont distribués en premier).
-      Chaque ville reçoit des dons en fonction de ses besoins restants non satisfaits.
+      Choisissez un mode de repartition : <strong>FIFO</strong> (besoins les plus anciens),
+      <strong>Stock</strong> (petites quantites d'abord) ou <strong>Proportionnel</strong> (au prorata des besoins).
+      Les dons sont toujours traites par ordre de date de saisie.
     </div>
   </div>
 </div>
@@ -72,7 +73,8 @@ ob_start();
       <div class="col-md-3">
         <label class="form-label fw-semibold">Mode de répartition</label>
         <select class="form-select" name="mode">
-          <option value="fifo" <?= $mode === 'fifo' ? 'selected' : '' ?>>FIFO — Premier arrivé, premier servi</option>
+          <option value="fifo" <?= $mode === 'fifo' ? 'selected' : '' ?>>FIFO — Premier arrive, premier servi</option>
+          <option value="stock" <?= $mode === 'stock' ? 'selected' : '' ?>>Stock — Petites quantites d'abord</option>
           <option value="proportionnel" <?= $mode === 'proportionnel' ? 'selected' : '' ?>>Proportionnel aux besoins</option>
         </select>
       </div>

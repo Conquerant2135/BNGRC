@@ -96,7 +96,7 @@ class DispatchController
         $dons = $donRepo->disponibles($dateDebut, $dateFin);
 
         // ── 2. Récupérer les besoins non satisfaits ──
-        $besoins = $besoinRepo->nonSatisfaits();
+        $besoins = $besoinRepo->nonSatisfaits($mode === 'stock' ? 'stock' : 'fifo');
 
         // Index des quantités restantes pour la simulation (sans modifier la BDD)
         $besoinRestant = [];
@@ -128,12 +128,13 @@ class DispatchController
                 if ($totalBesoin <= 0) continue;
 
                 $qteADistribuer = min($resteDon, $totalBesoin);
+                $precision      = 3;
 
                 foreach ($matchingBesoins as $b) {
                     if ($resteDon <= 0) break;
 
                     $ratio    = $besoinRestant[$b['id_besoin']] / $totalBesoin;
-                    $attribue = round($ratio * $qteADistribuer, 3);
+                    $attribue = self::floorToPrecision($ratio * $qteADistribuer, $precision);
                     $attribue = min($attribue, $besoinRestant[$b['id_besoin']], $resteDon);
 
                     if ($attribue <= 0) continue;
@@ -151,8 +152,36 @@ class DispatchController
                         'quantite_attribuee' => $attribue,
                     ];
 
-                    $resteDon                        -= $attribue;
-                    $besoinRestant[$b['id_besoin']]  -= $attribue;
+                    $resteDon                       -= $attribue;
+                    $besoinRestant[$b['id_besoin']] -= $attribue;
+                }
+
+                // Distribuer le reste (arrondi inferieur) en FIFO
+                if ($resteDon > 0) {
+                    foreach ($matchingBesoins as $b) {
+                        if ($resteDon <= 0) break;
+                        $besoinQte = $besoinRestant[$b['id_besoin']];
+                        if ($besoinQte <= 0) continue;
+
+                        $attribue = min($resteDon, $besoinQte);
+                        if ($attribue <= 0) continue;
+
+                        $resultats[] = [
+                            'id_don'             => $don['id_don'],
+                            'donateur'           => $don['donateur'],
+                            'date_don'           => $don['date_don'],
+                            'article_nom'        => $don['article_nom'],
+                            'unite'              => $don['unite'] ?? '',
+                            'quantite_don'       => $don['quantite'],
+                            'reste_don_avant'    => $resteDon,
+                            'id_besoin'          => $b['id_besoin'],
+                            'nom_ville'          => $b['nom_ville'],
+                            'quantite_attribuee' => $attribue,
+                        ];
+
+                        $resteDon                       -= $attribue;
+                        $besoinRestant[$b['id_besoin']] -= $attribue;
+                    }
                 }
             } else {
                 // ── Mode FIFO (défaut) — premier besoin servi d'abord ──
@@ -184,6 +213,12 @@ class DispatchController
         }
 
         return $resultats;
+    }
+
+    private static function floorToPrecision(float $value, int $precision): float
+    {
+        $factor = pow(10, $precision);
+        return floor($value * $factor) / $factor;
     }
 
     /**

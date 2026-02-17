@@ -69,3 +69,28 @@ LEFT JOIN (
 WHERE v.nb_sinistres > 0
 GROUP BY v.id_ville, v.nom_ville, r.nom, v.nb_sinistres, c.nom
 ORDER BY v.nom_ville, c.nom;
+
+-- mode stock : prioriser les besoins les plus petits (quantite)
+SELECT b.id_besoin, b.id_article, b.quantite, b.date_demande,
+       COALESCE(att_sum.total_attribue, 0) AS deja_attribue
+FROM bngrc_besoin b
+LEFT JOIN (
+  SELECT id_besoin, SUM(quantite_attribuee) AS total_attribue
+  FROM bngrc_attribution_don
+  GROUP BY id_besoin
+) att_sum ON att_sum.id_besoin = b.id_besoin
+WHERE b.est_satisfait = 0
+  AND (b.quantite - COALESCE(att_sum.total_attribue, 0)) > 0
+ORDER BY b.quantite ASC,id_besoin ASC;
+--+ [ ] Mode proportionnelle (repartition au prorata): 
+SELECT b.id_besoin, b.id_article,
+       (b.quantite - COALESCE(att_sum.total_attribue, 0)) AS restant
+FROM bngrc_besoin b
+LEFT JOIN (
+  SELECT id_besoin, SUM(quantite_attribuee) AS total_attribue
+  FROM bngrc_attribution_don
+  GROUP BY id_besoin
+) att_sum ON att_sum.id_besoin = b.id_besoin
+WHERE b.est_satisfait = 0
+  AND (b.quantite - COALESCE(att_sum.total_attribue, 0)) > 0
+ORDER BY b.date_demande ASC, b.id_besoin ASC;

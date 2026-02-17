@@ -27,3 +27,6 @@ don++ (il y a un don au nom de l'entreprise qui apparait)
 on calcule le prix total de la qte et on envoie une erreure si on a pas assez d'argent TTC 
 
 achat_produit ++ on calcule le taux et tout avce la taxe 
+
++ [ ] page achat produit
+    + [ ] formulaire 

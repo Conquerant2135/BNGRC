@@ -208,7 +208,7 @@ class DonController {
       'date_achat' => $req->data->date_achat
     ];
 
-    var_dump($input);
+
 
     $res = $svc->achatProduit($input);
     

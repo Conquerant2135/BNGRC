@@ -103,21 +103,3 @@ VALUES
     (2, 30.000);
 
 INSERT INTO bngrc_montant_taxe (valeur) VALUES ( 10 );
-
-mette un bouton resete dans la page dispatch qui fait
--- Désactiver les contraintes pour éviter les erreurs de clés étrangères
-SET FOREIGN_KEY_CHECKS = 0;
-
--- Vider les tables de données transactionnelles
-TRUNCATE TABLE bngrc_attribution_don;
-TRUNCATE TABLE bngrc_achat_produit ;
-TRUNCATE TABLE bngrc_stock;
-
--- Réactiver les contraintes
-SET FOREIGN_KEY_CHECKS = 1;
-
-réinitialiser les états des tables :
-bngrc_besoin;
-bngrc_don;
-
-l'un en attente et l'autre insatisfait 

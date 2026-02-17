@@ -1,7 +1,7 @@
 deploiement sur le serveur 
 BGNRC 
 
-+ [ ] suivi des  collectes et des suivies  de dons pour les sinistres 
++[X] suivi des  collectes et des suivies  de dons pour les sinistres 
 
 
 region : 
@@ -33,11 +33,11 @@ region :
 	[ ] besoin  possede un prix unitaire 
 	
 	besoin 
-		+ [ ] prix unitaire  // ne change jamais 
-		+ [ ] quantite
+		+[X] prix unitaire  // ne change jamais 
+		+[X] quantite
 
  -------------------
-+  [ ] Base de donnee:
++ [X] Base de donnee:
    +  [X] region 
          +  [X] id_region
          +  [X] nom_region
@@ -57,53 +57,53 @@ region :
 		+ [X] nom
 
 	article : 
-		+ [ ] id 
-		+ [ ] nom
-		+ [ ] id_unite
-		+ [ ] prix_unitaire
+		+[X] id 
+		+[X] nom
+		+[X] id_unite
+		+[X] prix_unitaire
  
 	traboina : 
-		+ [ ] id
-		+ [ ] nom 
-		+ [ ] adresse
-		+ [ ] numero
+		+[X] id
+		+[X] nom 
+		+[X] adresse
+		+[X] numero
 
  	besoin :
- 		+ [ ] id_besoin 
-		+ [ ] id_article 
-		+ [ ] id_ville
- 		+ [ ] quantite
- 		+ [ ] montant_total 
-		+ [ ] id_traboina
-		+ [ ] date_demande
-		+ [ ] est_satisfait
+ 		+[X] id_besoin 
+		+[X] id_article 
+		+[X] id_ville
+ 		+[X] quantite
+ 		+[X] montant_total 
+		+[X] id_traboina
+		+[X] date_demande
+		+[X] est_satisfait
 
 	etat_don :
-		+ [ ] id
-		+ [ ] nom
+		+[X] id
+		+[X] nom
 
  	don :
-		+ [ ] id_don
-		+ [ ] donateur 
-		+ [ ] date_don
-		+ [ ] id_ville
-		+ [ ] id_article
-		+ [ ] quantite
-		+ [ ] id_etat
+		+[X] id_don
+		+[X] donateur 
+		+[X] date_don
+		+[X] id_ville
+		+[X] id_article
+		+[X] quantite
+		+[X] id_etat
 
 <!-- gestion du dispatch -->
 
 	attribution_don :
-		+ [ ] id
-		+ [ ] id_don  
-		+ [ ] id_besoin
-		+ [ ] quantite
-		+ [ ] date_attribution 
+		+[X] id
+		+[X] id_don  
+		+[X] id_besoin
+		+[X] quantite
+		+[X] date_attribution 
 
 	stock : 
-		+ [ ] id
-		+ [ ] id_article
-		+ [ ] quantite
+		+[X] id
+		+[X] id_article
+		+[X] quantite
 
   		  Le sujet dit :
 
@@ -126,13 +126,13 @@ region :
 
 		Ville	Besoins totaux	Dons reçus	Reste à couvrir
 
-			+ [ ] Ville
+			+[X] Ville
 	
-			+ [ ] Liste des besoins
+			+[X] Liste des besoins
 
-			+ [ ] Quantité restante
+			+[X] Quantité restante
 
-			+ [ ] Total dons attribués
+			+[X] Total dons attribués
 
 
 
@@ -174,5 +174,5 @@ region :
 	+ [x] utilisation de bootstrap
 	+ [x] mise en page des view
 	+ [x] création de son propre template 
-+ [ ] deploiement :
-  + [ ] http://172.16.7.108/ETU004367/BNGRC 
++[X] deploiement :
+  +[X] http://172.16.7.108/ETU004367/BNGRC 

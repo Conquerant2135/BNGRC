@@ -9,25 +9,25 @@
 
 ### Utile
 
-- [ ] categorieRepository
-  - [ ] liste des categories
-- [ ] articleRepository
-  - [ ] liste des articles (all)
-  - [ ] article par categorie
-- [ ] unite repository
-  - [ ] liste des unites de mesures
+- [X] categorieRepository
+  -[X] liste des categories
+-[X] articleRepository
+  -[X] liste des articles (all)
+  -[X] article par categorie
+-[X] unite repository
+  -[X] liste des unites de mesures
 
 ## ajout de besoin
 
-- [ ] traboinaRepository
-  - [ ] inserer un traboina pour test
+-[X] traboinaRepository
+  -[X] inserer un traboina pour test
 
-- [ ] besoinRepository
-  - [ ] inserer un besoin : INSERT INTO id_article , id_ville , qte , en double , montant (calcul auto) , id_traboina , date_demande , false (car encore non satisfait )
+-[X] besoinRepository
+  -[X] inserer un besoin : INSERT INTO id_article , id_ville , qte , en double , montant (calcul auto) , id_traboina , date_demande , false (car encore non satisfait )
 
-- [ ] besoinService
-  - [ ] point de passage entre le repo et le controller
+-[X] besoinService
+  -[X] point de passage entre le repo et le controller
 
-- [ ] besoinController ( page besoins.php )
-  - [ ] passage a la page des besoin : route GET / besoin (passer la liste des categories => 'cat' , article => 'article', ville => 'ville' )
-  - [ ] recuperation des donnees sur le formulaire d'insertion d'un besoin
+-[X] besoinController ( page besoins.php )
+  -[X] passage a la page des besoin : route GET / besoin (passer la liste des categories => 'cat' , article => 'article', ville => 'ville' )
+  -[X] recuperation des donnees sur le formulaire d'insertion d'un besoin

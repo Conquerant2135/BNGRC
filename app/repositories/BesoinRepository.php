@@ -137,12 +137,12 @@ class BesoinRepository
      */
     public function nonSatisfaits(string $mode = 'fifo'): array
     {
-        $orderBy = "b.date_demande ASC, b.id_besoin ASC";
+        $orderBy = "b.ordre ASC, b.date_demande ASC, b.id_besoin ASC";
         if ($mode === 'stock') {
-            $orderBy = "b.quantite ASC, b.id_besoin";
+            $orderBy = "b.quantite ASC, b.id_besoin ASC";
         }
 
-        $sql = "SELECT b.id_besoin, b.id_article, b.id_ville, b.quantite, b.date_demande,
+        $sql = "SELECT b.id_besoin, b.id_article, b.id_ville, b.quantite, b.date_demande, b.ordre,
                        v.nom_ville, a.nom AS article_nom,
                        COALESCE(att_sum.total_attribue, 0) AS deja_attribue
                 FROM bngrc_besoin b

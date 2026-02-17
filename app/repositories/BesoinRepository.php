@@ -9,12 +9,17 @@ class BesoinRepository
         $this->pdo = \Flight::db();
     }
 
+    private function nextOrdre(): int
+    {
+        $max = (int)$this->pdo->query("SELECT COALESCE(MAX(ordre), 0) FROM bngrc_besoin")->fetchColumn();
+        return $max + 1;
+    }
     public function insert(array $data): int
     {
         $stmt = $this->pdo->prepare(
             "INSERT INTO bngrc_besoin
-             (id_article, id_ville, quantite, montant_totale, id_traboina, date_demande, est_satisfait)
-             VALUES (:id_article, :id_ville, :quantite, :montant_totale, :id_traboina, :date_demande, 0)"
+             (id_article, id_ville, quantite, montant_totale, date_demande, est_satisfait , ordre )
+             VALUES (:id_article, :id_ville, :quantite, :montant_totale, :date_demande, 0 , :ordre )"
         );
 
         $stmt->execute([
@@ -22,7 +27,7 @@ class BesoinRepository
             'id_ville' => $data['id_ville'],
             'quantite' => $data['quantite'],
             'montant_totale' => $data['montant_totale'],
-            'id_traboina' => $data['id_traboina'] ?: null,
+            'ordre' => $this->nextOrdre(),
             'date_demande' => $data['date_demande']
         ]);
 
@@ -47,7 +52,7 @@ class BesoinRepository
             'id_ville' => $data['id_ville'],
             'quantite' => $data['quantite'],
             'montant_totale' => $data['montant_totale'],
-            'id_traboina' => $data['id_traboina'] ?: null,
+            'id_traboina' => null,
             'date_demande' => $data['date_demande'],
             'id_besoin' => $id
         ]);

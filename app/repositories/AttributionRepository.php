@@ -148,15 +148,30 @@ class AttributionRepository
     public function resetAll(): void
     {
         $this->pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+
         $this->pdo->exec("TRUNCATE TABLE bngrc_attribution_don");
         $this->pdo->exec("TRUNCATE TABLE bngrc_achat_produit");
         $this->pdo->exec("TRUNCATE TABLE bngrc_stock");
+        $this->pdo->exec("TRUNCATE TABLE bngrc_don");
+        $this->pdo->exec("TRUNCATE TABLE bngrc_besoin");
+        $this->pdo->exec("TRUNCATE TABLE bngrc_traboina");
+        $this->pdo->exec("TRUNCATE TABLE bngrc_article");
+        $this->pdo->exec("TRUNCATE TABLE bngrc_categorie");
+        $this->pdo->exec("TRUNCATE TABLE bngrc_unite");
+        $this->pdo->exec("TRUNCATE TABLE bngrc_ville");
+        $this->pdo->exec("TRUNCATE TABLE bngrc_region");
+
         $this->pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
 
-        // Remettre tous les besoins à insatisfait
-        $this->pdo->exec("UPDATE bngrc_besoin SET est_satisfait = 0");
+        // Réinsérer les données depuis data_test.sql
+        $sqlFile = BASE_URL . 'data_test.sql';
+        $sql = file_get_contents($sqlFile);
+        $statements = array_filter(array_map('trim', explode(';', $sql)));
 
-        // Remettre tous les dons en attente (id_etat = 1)
-        $this->pdo->exec("UPDATE bngrc_don SET id_etat = 1");
+        foreach ($statements as $stmt) {
+            if ($stmt !== '') {
+                $this->pdo->exec($stmt);
+            }
+        }
     }
 }

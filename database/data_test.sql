@@ -39,90 +39,107 @@ INSERT INTO bngrc_article (id, nom, id_unite, prix_unitaire, id_cat) VALUES
   (10, 'Argent', 4, 1, 3);
 
 -- Besoins (données demandées)
-INSERT INTO bngrc_besoin (id_article, id_ville, quantite, montant_totale, id_traboina, date_demande, est_satisfait) VALUES
-  (1, 1, 800, 2400000, NULL, '2026-02-16', 0),
-  (2, 1, 1500, 1500000, NULL, '2026-02-15', 0),
-  (5, 1, 120, 3000000, NULL, '2026-02-16', 0),
-  (6, 1, 200, 3000000, NULL, '2026-02-15', 0),
-  (10, 1, 12000000, 12000000, NULL, '2026-02-16', 0),
-  (1, 2, 500, 1500000, NULL, '2026-02-15', 0),
-  (3, 2, 120, 720000, NULL, '2026-02-16', 0),
-  (5, 2, 80, 2000000, NULL, '2026-02-15', 0),
-  (7, 2, 60, 480000, NULL, '2026-02-16', 0),
-  (10, 2, 6000000, 6000000, NULL, '2026-02-15', 0),
-  (1, 3, 600, 1800000, NULL, '2026-02-16', 0),
-  (2, 3, 1000, 1000000, NULL, '2026-02-15', 0),
-  (6, 3, 150, 2250000, NULL, '2026-02-16', 0),
-  (8, 3, 100, 1000000, NULL, '2026-02-15', 0),
-  (10, 3, 8000000, 8000000, NULL, '2026-02-16', 0),
-  (1, 4, 300, 900000, NULL, '2026-02-15', 0),
-  (4, 4, 200, 800000, NULL, '2026-02-16', 0),
-  (5, 4, 40, 1000000, NULL, '2026-02-15', 0),
-  (7, 4, 30, 240000, NULL, '2026-02-16', 0),
-  (10, 4, 4000000, 4000000, NULL, '2026-02-15', 0),
-  (1, 5, 700, 2100000, NULL, '2026-02-16', 0),
-  (2, 5, 1200, 1200000, NULL, '2026-02-15', 0),
-  (6, 5, 180, 2700000, NULL, '2026-02-16', 0),
-  (8, 5, 150, 1500000, NULL, '2026-02-15', 0),
-  (10, 5, 10000000, 10000000, NULL, '2026-02-16', 0),
-  (9, 1, 3, 20250000, NULL, '2026-02-15', 0);
+-- ...existing code...
 
+INSERT INTO bngrc_besoin (id_article, id_ville, quantite, montant_totale, id_traboina, date_demande, est_satisfait, ordre) VALUES
+  (1, 1, 800, 2400000, NULL, '2026-02-16', 0, 17),
+  (2, 1, 1500, 1500000, NULL, '2026-02-15', 0, 4),
+  (5, 1, 120, 3000000, NULL, '2026-02-16', 0, 23),
+  (6, 1, 200, 3000000, NULL, '2026-02-15', 0, 1),
+  (10, 1, 12000000, 12000000, NULL, '2026-02-16', 0, 12),
+
+  (1, 2, 500, 1500000, NULL, '2026-02-15', 0, 9),
+  (3, 2, 120, 720000, NULL, '2026-02-16', 0, 25),
+  (5, 2, 80, 2000000, NULL, '2026-02-15', 0, 6),
+  (7, 2, 60, 480000, NULL, '2026-02-16', 0, 19),
+  (10, 2, 6000000, 6000000, NULL, '2026-02-15', 0, 3),
+
+  (1, 3, 600, 1800000, NULL, '2026-02-16', 0, 21),
+  (2, 3, 1000, 1000000, NULL, '2026-02-15', 0, 14),
+  (6, 3, 150, 2250000, NULL, '2026-02-16', 0, 8),
+  (8, 3, 100, 1000000, NULL, '2026-02-15', 0, 26),
+  (10, 3, 8000000, 8000000, NULL, '2026-02-16', 0, 10),
+
+  (1, 4, 300, 900000, NULL, '2026-02-15', 0, 5),
+  (4, 4, 200, 800000, NULL, '2026-02-16', 0, 18),
+  (5, 4, 40, 1000000, NULL, '2026-02-15', 0, 2),
+  (7, 4, 30, 240000, NULL, '2026-02-16', 0, 24),
+  (10, 4, 4000000, 4000000, NULL, '2026-02-15', 0, 7),
+
+  (1, 5, 700, 2100000, NULL, '2026-02-16', 0, 11),
+  (2, 5, 1200, 1200000, NULL, '2026-02-15', 0, 20),
+  (6, 5, 180, 2700000, NULL, '2026-02-16', 0, 15),
+  (8, 5, 150, 1500000, NULL, '2026-02-15', 0, 22),
+  (10, 5, 10000000, 10000000, NULL, '2026-02-16', 0, 13),
+
+  (9, 1, 3, 20250000, NULL, '2026-02-15', 0, 16);
+
+-- ...existing code...
   -- ...existing code...
 
+INSERT INTO bngrc_etat_don (id, nom) VALUES
+  (1, 'En attente'),
+  (2, 'Distribué'),
+  (3, 'Partiellement distribué')
+ON DUPLICATE KEY UPDATE nom = VALUES(nom);
+
+
+-- ...existing code...
+
 INSERT INTO bngrc_don (donateur, date_don, id_cat, id_article, quantite, id_etat) VALUES
-  ('Seed', '2026-02-16',
+  ('Jean', '2026-02-16',
    (SELECT id FROM bngrc_categorie WHERE nom='argent'),
-   (SELECT id FROM bngrc_article WHERE nom='Argent'), 5000000, NULL),
-  ('Seed', '2026-02-16',
+   (SELECT id FROM bngrc_article WHERE nom='Argent'), 5000000, 1),
+  ('Jean', '2026-02-16',
    (SELECT id FROM bngrc_categorie WHERE nom='argent'),
-   (SELECT id FROM bngrc_article WHERE nom='Argent'), 3000000, NULL),
-  ('Seed', '2026-02-17',
+   (SELECT id FROM bngrc_article WHERE nom='Argent'), 3000000, 1),
+  ('Jean', '2026-02-17',
    (SELECT id FROM bngrc_categorie WHERE nom='argent'),
-   (SELECT id FROM bngrc_article WHERE nom='Argent'), 4000000, NULL),
-  ('Seed', '2026-02-17',
+   (SELECT id FROM bngrc_article WHERE nom='Argent'), 4000000, 1),
+  ('Jean', '2026-02-17',
    (SELECT id FROM bngrc_categorie WHERE nom='argent'),
-   (SELECT id FROM bngrc_article WHERE nom='Argent'), 1500000, NULL),
-  ('Seed', '2026-02-17',
+   (SELECT id FROM bngrc_article WHERE nom='Argent'), 1500000, 1),
+  ('Jean', '2026-02-17',
    (SELECT id FROM bngrc_categorie WHERE nom='argent'),
-   (SELECT id FROM bngrc_article WHERE nom='Argent'), 6000000, NULL),
-  ('Seed', '2026-02-16',
+   (SELECT id FROM bngrc_article WHERE nom='Argent'), 6000000, 1),
+  ('Jean', '2026-02-16',
    (SELECT id FROM bngrc_categorie WHERE nom='nature'),
-   (SELECT id FROM bngrc_article WHERE nom='Riz (kg)'), 400, NULL),
-  ('Seed', '2026-02-16',
+   (SELECT id FROM bngrc_article WHERE nom='Riz (kg)'), 400, 1),
+  ('Jean', '2026-02-16',
    (SELECT id FROM bngrc_categorie WHERE nom='nature'),
-   (SELECT id FROM bngrc_article WHERE nom='Eau (L)'), 600, NULL),
+   (SELECT id FROM bngrc_article WHERE nom='Eau (L)'), 600, 1),
 
-  ('Seed', '2026-02-17',
+  ('Jean', '2026-02-17',
    (SELECT id FROM bngrc_categorie WHERE nom='materiel'),
-   (SELECT id FROM bngrc_article WHERE nom='Tôle'), 50, NULL),
-  ('Seed', '2026-02-17',
+   (SELECT id FROM bngrc_article WHERE nom='Tôle'), 50, 1),
+  ('Jean', '2026-02-17',
    (SELECT id FROM bngrc_categorie WHERE nom='materiel'),
-   (SELECT id FROM bngrc_article WHERE nom='Bâche'), 70, NULL),
+   (SELECT id FROM bngrc_article WHERE nom='Bâche'), 70, 1),
 
-  ('Seed', '2026-02-17',
+  ('Jean', '2026-02-17',
    (SELECT id FROM bngrc_categorie WHERE nom='nature'),
-   (SELECT id FROM bngrc_article WHERE nom='Haricots'), 100, NULL),
+   (SELECT id FROM bngrc_article WHERE nom='Haricots'), 100, 1),
 
-  ('Seed', '2026-02-18',
+  ('Jean', '2026-02-18',
    (SELECT id FROM bngrc_categorie WHERE nom='nature'),
-   (SELECT id FROM bngrc_article WHERE nom='Riz (kg)'), 2000, NULL),
-  ('Seed', '2026-02-18',
+   (SELECT id FROM bngrc_article WHERE nom='Riz (kg)'), 2000, 1),
+  ('Jean', '2026-02-18',
    (SELECT id FROM bngrc_categorie WHERE nom='materiel'),
-   (SELECT id FROM bngrc_article WHERE nom='Tôle'), 300, NULL),
-  ('Seed', '2026-02-18',
+   (SELECT id FROM bngrc_article WHERE nom='Tôle'), 300, 1),
+  ('Jean', '2026-02-18',
    (SELECT id FROM bngrc_categorie WHERE nom='nature'),
-   (SELECT id FROM bngrc_article WHERE nom='Eau (L)'), 5000, NULL),
+   (SELECT id FROM bngrc_article WHERE nom='Eau (L)'), 5000, 1),
 
-  ('Seed', '2026-02-19',
+  ('Jean', '2026-02-19',
    (SELECT id FROM bngrc_categorie WHERE nom='argent'),
-   (SELECT id FROM bngrc_article WHERE nom='Argent'), 20000000, NULL),
+   (SELECT id FROM bngrc_article WHERE nom='Argent'), 20000000, 1),
 
-  ('Seed', '2026-02-19',
+  ('Jean', '2026-02-19',
    (SELECT id FROM bngrc_categorie WHERE nom='materiel'),
-   (SELECT id FROM bngrc_article WHERE nom='Bâche'), 500, NULL),
+   (SELECT id FROM bngrc_article WHERE nom='Bâche'), 500, 1),
 
-  ('Seed', '2026-02-17',
+  ('Jean', '2026-02-17',
    (SELECT id FROM bngrc_categorie WHERE nom='nature'),
-   (SELECT id FROM bngrc_article WHERE nom='Haricots'), 88, NULL);
+   (SELECT id FROM bngrc_article WHERE nom='Haricots'), 88, 1);
 
 -- ...existing code...

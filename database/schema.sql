@@ -51,7 +51,7 @@ CREATE TABLE bngrc_besoin (
   id_article INT,
   id_ville INT,
   quantite DECIMAL(15, 3) NOT NULL,
-  montant_totale DECIMAL(10, 3) NOT NULL DEFAULT 0,
+  montant_totale DECIMAL(20, 3) NOT NULL DEFAULT 0,
   id_traboina INT,
   date_demande DATE NOT NULL,
   est_satisfait TINYINT(1) NOT NULL DEFAULT 0,

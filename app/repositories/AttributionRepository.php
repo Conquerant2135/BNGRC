@@ -74,6 +74,72 @@ class AttributionRepository
     }
 
     /**
+     * Récapitulatif du dispatch : besoins totaux, satisfaits, restants (en montants) par ville
+     */
+    public function recapParVille(): array
+    {
+        $sql = "SELECT v.nom_ville,
+                       COUNT(b.id_besoin) AS nb_besoins,
+                       COALESCE(SUM(b.montant_totale), 0) AS montant_total_besoins,
+                       COALESCE(SUM(CASE WHEN b.est_satisfait = 1 THEN b.montant_totale ELSE 0 END), 0) AS montant_satisfait,
+                       COALESCE(SUM(
+                           CASE WHEN b.est_satisfait = 0 THEN
+                               GREATEST(0,
+                                   b.montant_totale - b.montant_totale * LEAST(1,
+                                       COALESCE(att.total_attribue, 0) / GREATEST(b.quantite, 0.001)
+                                   )
+                               )
+                           ELSE 0 END
+                       ), 0) AS montant_restant,
+                       COALESCE(SUM(
+                           CASE WHEN b.est_satisfait = 0 THEN
+                               b.montant_totale * LEAST(1,
+                                   COALESCE(att.total_attribue, 0) / GREATEST(b.quantite, 0.001)
+                               )
+                           ELSE 0 END
+                       ), 0) AS montant_partiellement_couvert,
+                       COUNT(CASE WHEN b.est_satisfait = 1 THEN 1 END) AS nb_satisfaits,
+                       COUNT(CASE WHEN b.est_satisfait = 0 THEN 1 END) AS nb_insatisfaits
+                FROM bngrc_besoin b
+                JOIN bngrc_ville v ON v.id_ville = b.id_ville
+                LEFT JOIN (
+                    SELECT id_besoin, SUM(quantite_attribuee) AS total_attribue
+                    FROM bngrc_attribution_don
+                    GROUP BY id_besoin
+                ) att ON att.id_besoin = b.id_besoin
+                GROUP BY v.id_ville, v.nom_ville
+                ORDER BY v.nom_ville";
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Totaux globaux du dispatch (montants)
+     */
+    public function recapGlobal(): array
+    {
+        $sql = "SELECT
+                    COUNT(b.id_besoin) AS nb_besoins,
+                    COALESCE(SUM(b.montant_totale), 0) AS montant_total,
+                    COALESCE(SUM(CASE WHEN b.est_satisfait = 1 THEN b.montant_totale ELSE 0 END), 0) AS montant_satisfait,
+                    COUNT(CASE WHEN b.est_satisfait = 1 THEN 1 END) AS nb_satisfaits,
+                    COUNT(CASE WHEN b.est_satisfait = 0 THEN 1 END) AS nb_insatisfaits,
+                    COALESCE(SUM(
+                        CASE WHEN b.est_satisfait = 0 THEN
+                            b.montant_totale * LEAST(1,
+                                COALESCE(att.total_attribue, 0) / GREATEST(b.quantite, 0.001)
+                            )
+                        ELSE 0 END
+                    ), 0) AS montant_partiellement_couvert
+                FROM bngrc_besoin b
+                LEFT JOIN (
+                    SELECT id_besoin, SUM(quantite_attribuee) AS total_attribue
+                    FROM bngrc_attribution_don
+                    GROUP BY id_besoin
+                ) att ON att.id_besoin = b.id_besoin";
+        return $this->pdo->query($sql)->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * Réinitialiser toutes les données de dispatch :
      * - Vider attribution_don, achat_produit, stock
      * - Remettre besoins à est_satisfait = 0

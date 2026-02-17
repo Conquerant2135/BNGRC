@@ -88,6 +88,35 @@ class DispatchController
     }
 
     /**
+     * GET /dispatch/recap — Page récapitulation des dispatch
+     */
+    public static function recap()
+    {
+        $attributionRepo = new AttributionRepository();
+        $global = $attributionRepo->recapGlobal();
+        $villes = $attributionRepo->recapParVille();
+
+        Flight::render('recap-dispatch', [
+            'global' => $global,
+            'villes' => $villes,
+        ]);
+    }
+
+    /**
+     * GET /dispatch/recap/json — Données JSON pour actualisation AJAX
+     */
+    public static function recapJson()
+    {
+        $attributionRepo = new AttributionRepository();
+        $global = $attributionRepo->recapGlobal();
+        $villes = $attributionRepo->recapParVille();
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['global' => $global, 'villes' => $villes]);
+        exit;
+    }
+
+    /**
      * POST /dispatch/reset — Réinitialiser les données de dispatch
      */
     public static function reset()

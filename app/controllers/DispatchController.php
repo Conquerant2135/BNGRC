@@ -164,6 +164,11 @@ class DispatchController
 
             if ($mode === 'proportionnel') {
                 // ── Mode proportionnel ──
+                // Logique:
+                // 1. Attribuer floor(qty * besoin_i / total_bestoin) à chaque besoin
+                // 2. Distribuer le RESTE aux plus grandes décimales (si >= 0)
+                // 3. Vérifier que total attribué = quantité exacte
+                
                 $totalBesoin = 0;
                 foreach ($matchingBesoins as $b) {
                     $totalBesoin += $besoinRestant[$b['id_besoin']];
@@ -171,44 +176,51 @@ class DispatchController
                 if ($totalBesoin <= 0) continue;
 
                 $qteADistribuer = min($resteDon, $totalBesoin);
-                $precision      = 3;
+                $allocations = [];
+                $totalFloor = 0;
 
+                // Étape 1: Calculer floor et décimale pour chaque besoin
                 foreach ($matchingBesoins as $b) {
-                    if ($resteDon <= 0) break;
+                    $besoinQte = $besoinRestant[$b['id_besoin']];
+                    if ($besoinQte <= 0) continue;
 
-                    $ratio    = $besoinRestant[$b['id_besoin']] / $totalBesoin;
-                    $attribue = self::floorToPrecision($ratio * $qteADistribuer, $precision);
-                    $attribue = min($attribue, $besoinRestant[$b['id_besoin']], $resteDon);
+                    $partQte = ($besoinQte / $totalBesoin) * $qteADistribuer;
+                    $floorVal = intval(floor($partQte));
+                    $decimal = $partQte - $floorVal;
 
-                    if ($attribue <= 0) continue;
-
-                    $resultats[] = [
-                        'id_don'             => $don['id_don'],
-                        'donateur'           => $don['donateur'],
-                        'date_don'           => $don['date_don'],
-                        'article_nom'        => $don['article_nom'],
-                        'unite'              => $don['unite'] ?? '',
-                        'quantite_don'       => $don['quantite'],
-                        'reste_don_avant'    => $resteDon,
-                        'id_besoin'          => $b['id_besoin'],
-                        'nom_ville'          => $b['nom_ville'],
-                        'quantite_attribuee' => $attribue,
+                    $allocations[] = [
+                        'id_besoin'    => $b['id_besoin'],
+                        'besoin_qte'   => $besoinQte,
+                        'floor'        => $floorVal,
+                        'decimal'      => $decimal,
+                        'attribue'     => $floorVal, // sera augmenté si decimal >= 0.5 et reste > 0
+                        'nom_ville'    => $b['nom_ville'],
                     ];
 
-                    $resteDon                       -= $attribue;
-                    $besoinRestant[$b['id_besoin']] -= $attribue;
+                    $totalFloor += $floorVal;
                 }
 
-                // Distribuer le reste (arrondi inferieur) en FIFO
-                if ($resteDon > 0) {
-                    foreach ($matchingBesoins as $b) {
-                        if ($resteDon <= 0) break;
-                        $besoinQte = $besoinRestant[$b['id_besoin']];
-                        if ($besoinQte <= 0) continue;
+                // Étape 2: Distribuer le reste aux décimales >= 0, en ordre décroissant
+                $reste = $qteADistribuer - $totalFloor;
 
-                        $attribue = min($resteDon, $besoinQte);
-                        if ($attribue <= 0) continue;
+                if ($reste > 0) {
+                    // Trier par decimal (décroissant)
+                    usort($allocations, fn($a, $b) => $b['decimal'] <=> $a['decimal']);
 
+                    // Donner +1 aux plus grandes décimales jusqu'à épuisement du reste
+                    foreach ($allocations as &$alloc) {
+                        if ($reste <= 0) break;
+                        if ($alloc['decimal'] > 0) {
+                            $alloc['attribue'] += 1;
+                            $reste -= 1;
+                        }
+                    }
+                    unset($alloc);
+                }
+
+                // Étape 3: Insérer les attributions dans resultats
+                foreach ($allocations as $alloc) {
+                    if ($alloc['attribue'] > 0) {
                         $resultats[] = [
                             'id_don'             => $don['id_don'],
                             'donateur'           => $don['donateur'],
@@ -217,13 +229,13 @@ class DispatchController
                             'unite'              => $don['unite'] ?? '',
                             'quantite_don'       => $don['quantite'],
                             'reste_don_avant'    => $resteDon,
-                            'id_besoin'          => $b['id_besoin'],
-                            'nom_ville'          => $b['nom_ville'],
-                            'quantite_attribuee' => $attribue,
+                            'id_besoin'          => $alloc['id_besoin'],
+                            'nom_ville'          => $alloc['nom_ville'],
+                            'quantite_attribuee' => $alloc['attribue'],
                         ];
 
-                        $resteDon                       -= $attribue;
-                        $besoinRestant[$b['id_besoin']] -= $attribue;
+                        $resteDon                                -= $alloc['attribue'];
+                        $besoinRestant[$alloc['id_besoin']]      -= $alloc['attribue'];
                     }
                 }
             } else {
@@ -256,12 +268,6 @@ class DispatchController
         }
 
         return $resultats;
-    }
-
-    private static function floorToPrecision(float $value, int $precision): float
-    {
-        $factor = pow(10, $precision);
-        return floor($value * $factor) / $factor;
     }
 
     /**

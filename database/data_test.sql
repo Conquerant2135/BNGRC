@@ -66,3 +66,63 @@ INSERT INTO bngrc_besoin (id_article, id_ville, quantite, montant_totale, id_tra
   (8, 5, 150, 1500000, NULL, '2026-02-15', 0),
   (10, 5, 10000000, 10000000, NULL, '2026-02-16', 0),
   (9, 1, 3, 20250000, NULL, '2026-02-15', 0);
+
+  -- ...existing code...
+
+INSERT INTO bngrc_don (donateur, date_don, id_cat, id_article, quantite, id_etat) VALUES
+  ('Seed', '2026-02-16',
+   (SELECT id FROM bngrc_categorie WHERE nom='argent'),
+   (SELECT id FROM bngrc_article WHERE nom='Argent'), 5000000, NULL),
+  ('Seed', '2026-02-16',
+   (SELECT id FROM bngrc_categorie WHERE nom='argent'),
+   (SELECT id FROM bngrc_article WHERE nom='Argent'), 3000000, NULL),
+  ('Seed', '2026-02-17',
+   (SELECT id FROM bngrc_categorie WHERE nom='argent'),
+   (SELECT id FROM bngrc_article WHERE nom='Argent'), 4000000, NULL),
+  ('Seed', '2026-02-17',
+   (SELECT id FROM bngrc_categorie WHERE nom='argent'),
+   (SELECT id FROM bngrc_article WHERE nom='Argent'), 1500000, NULL),
+  ('Seed', '2026-02-17',
+   (SELECT id FROM bngrc_categorie WHERE nom='argent'),
+   (SELECT id FROM bngrc_article WHERE nom='Argent'), 6000000, NULL),
+  ('Seed', '2026-02-16',
+   (SELECT id FROM bngrc_categorie WHERE nom='nature'),
+   (SELECT id FROM bngrc_article WHERE nom='Riz (kg)'), 400, NULL),
+  ('Seed', '2026-02-16',
+   (SELECT id FROM bngrc_categorie WHERE nom='nature'),
+   (SELECT id FROM bngrc_article WHERE nom='Eau (L)'), 600, NULL),
+
+  ('Seed', '2026-02-17',
+   (SELECT id FROM bngrc_categorie WHERE nom='materiel'),
+   (SELECT id FROM bngrc_article WHERE nom='Tôle'), 50, NULL),
+  ('Seed', '2026-02-17',
+   (SELECT id FROM bngrc_categorie WHERE nom='materiel'),
+   (SELECT id FROM bngrc_article WHERE nom='Bâche'), 70, NULL),
+
+  ('Seed', '2026-02-17',
+   (SELECT id FROM bngrc_categorie WHERE nom='nature'),
+   (SELECT id FROM bngrc_article WHERE nom='Haricots'), 100, NULL),
+
+  ('Seed', '2026-02-18',
+   (SELECT id FROM bngrc_categorie WHERE nom='nature'),
+   (SELECT id FROM bngrc_article WHERE nom='Riz (kg)'), 2000, NULL),
+  ('Seed', '2026-02-18',
+   (SELECT id FROM bngrc_categorie WHERE nom='materiel'),
+   (SELECT id FROM bngrc_article WHERE nom='Tôle'), 300, NULL),
+  ('Seed', '2026-02-18',
+   (SELECT id FROM bngrc_categorie WHERE nom='nature'),
+   (SELECT id FROM bngrc_article WHERE nom='Eau (L)'), 5000, NULL),
+
+  ('Seed', '2026-02-19',
+   (SELECT id FROM bngrc_categorie WHERE nom='argent'),
+   (SELECT id FROM bngrc_article WHERE nom='Argent'), 20000000, NULL),
+
+  ('Seed', '2026-02-19',
+   (SELECT id FROM bngrc_categorie WHERE nom='materiel'),
+   (SELECT id FROM bngrc_article WHERE nom='Bâche'), 500, NULL),
+
+  ('Seed', '2026-02-17',
+   (SELECT id FROM bngrc_categorie WHERE nom='nature'),
+   (SELECT id FROM bngrc_article WHERE nom='Haricots'), 88, NULL);
+
+-- ...existing code...
